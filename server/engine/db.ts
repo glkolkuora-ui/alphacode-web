@@ -9,6 +9,8 @@ export const pool = DATABASE_URL
       connectionString: DATABASE_URL,
       ssl: DATABASE_URL.includes('railway.internal') ? false : { rejectUnauthorized: false },
       max: 8,
+      connectionTimeoutMillis: 5000,
+      idleTimeoutMillis: 30_000,
     })
   : null
 
