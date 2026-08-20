@@ -143,13 +143,10 @@ export default function ConfigPanel({ balances, onStart, onClose }: Props) {
   const MIN_BANKROLL = 60
   const balanceAmount = selectedBalance?.amount ?? 0
   const bankrollOk = balanceAmount >= MIN_BANKROLL
-  console.log('[CURRENCY-DEBUG]', {
-    balanceId,
-    balanceIdType: typeof balanceId,
-    balances: balances.map(b => ({ id: b.id, idType: typeof b.id, currency: b.currency, type: b.type })),
-    currentCurrency,
-  })
   const sym = currencySymbol(currentCurrency)
+  const sessionPair = selectedActive
+    ? `${selectedActive.ticker}${selectedActive.isOtc ? ' OTC' : ''}`
+    : t('config.selectAsset')
 
   function handleToggleHard(next: boolean) {
     setHard(next)
@@ -167,19 +164,19 @@ export default function ConfigPanel({ balances, onStart, onClose }: Props) {
 
   return (
     <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-card" onClick={e => e.stopPropagation()}>
-        <div className="modal-header">
-          <span className="modal-title">{t('config.title')}</span>
+      <div className="modal-card modal-card--setup" onClick={e => e.stopPropagation()}>
+        <div className="modal-header setup-head">
+          <div className="setup-head-copy">
+            <span className="modal-title">{t('config.title')}</span>
+            <p className="setup-head-sub">{sessionPair} · Digital</p>
+          </div>
           <button type="button" className="modal-close" onClick={onClose} aria-label={t('config.close')}>✕</button>
         </div>
 
-        <div className="modal-body">
-
-          {/* Ativo */}
-          <div className="config-section">
-            <div className="config-section-title">{t('config.assetSection')}</div>
-            <div className="field-row">
-              <div className="field-group">
+        <div className="modal-body setup-body">
+          <section className="setup-block">
+            <div className="setup-grid">
+              <div className="field-group setup-span-2">
                 <label>{t('config.pair')}</label>
                 <ActiveSelect
                   actives={actives}
@@ -187,22 +184,12 @@ export default function ConfigPanel({ balances, onStart, onClose }: Props) {
                   instrument={instrument}
                   onChange={setActiveId}
                 />
-                {activesError && <div className="config-warning">{activesError}</div>}
               </div>
-              <div className="field-group field-sm">
-                <label>{t('config.type')}</label>
-                <select className="select-locked" value="digital" disabled aria-readonly="true" title={t('config.digitalLocked')}>
-                  <option value="digital">Digital</option>
-                </select>
-              </div>
-            </div>
-          </div>
-
-          {/* Conta */}
-          <div className="config-section">
-            <div className="config-section-title">{t('config.accountSection')}</div>
-            <div className="field-row">
               <div className="field-group">
+                <label>{t('config.baseAmount', { sym })}</label>
+                <input type="number" min="1" value={entryAmount} onChange={e => setEntryAmount(e.target.value)} />
+              </div>
+              <div className="field-group setup-span-3">
                 <label>{t('config.account')}</label>
                 <AccountSelect
                   balances={realBalances}
@@ -210,11 +197,8 @@ export default function ConfigPanel({ balances, onStart, onClose }: Props) {
                   onChange={setBalanceId}
                 />
               </div>
-              <div className="field-group field-sm">
-                <label>{t('config.baseAmount', { sym })}</label>
-                <input type="number" min="1" value={entryAmount} onChange={e => setEntryAmount(e.target.value)} />
-              </div>
             </div>
+            {activesError && <div className="config-warning">{activesError}</div>}
             {!bankrollOk && (
               <div className="config-warning">
                 {t('config.minBankroll', {
@@ -223,80 +207,67 @@ export default function ConfigPanel({ balances, onStart, onClose }: Props) {
                 })}
               </div>
             )}
-          </div>
+          </section>
 
-          {/* Estratégias */}
-          <div className="config-section">
-            <div className="config-section-title">{t('config.strategies')}</div>
-            <div className="strategy-grid">
-              <StrategyToggle id="q5" label="Q5" active={q5}
-                onChange={v => handleToggleNormal(setQ5, v)}
-                disabled={hard} />
-              <StrategyToggle id="alt" label="ALT" active={alt}
-                onChange={v => handleToggleNormal(setAlt, v)}
-                disabled={hard} />
-              <StrategyToggle id="l2" label="LAST2" active={last2}
-                onChange={v => handleToggleNormal(setLast2, v)}
-                disabled={hard} />
-              <StrategyToggle id="hard" label="HARD" active={hard}
-                onChange={handleToggleHard} />
+          <section className="setup-block">
+            <div className="setup-block-label">{t('config.strategies')}</div>
+            <div className="strategy-chips" role="group" aria-label={t('config.strategies')}>
+              <StrategyToggle label="Q5" active={q5} onChange={v => handleToggleNormal(setQ5, v)} disabled={hard} />
+              <StrategyToggle label="ALT" active={alt} onChange={v => handleToggleNormal(setAlt, v)} disabled={hard} />
+              <StrategyToggle label="LAST2" active={last2} onChange={v => handleToggleNormal(setLast2, v)} disabled={hard} />
+              <StrategyToggle label="HARD" active={hard} onChange={handleToggleHard} />
             </div>
             {!anyStrategy && <div className="config-warning">{t('config.needStrategy')}</div>}
-          </div>
 
-          {/* Gale */}
-          <div className="config-section">
-            <div className="config-section-title">
-              <span>{t('config.gale')}</span>
-              <Toggle active={galeEnabled} onChange={setGaleEnabled} />
-            </div>
-            {galeEnabled && (
-              <div className="field-row">
-                <div className="field-group">
+            <div className="setup-opt">
+              <div className="setup-opt-row">
+                <div>
+                  <div className="setup-opt-name">{t('config.gale')}</div>
+                  {galeEnabled && (
+                    <p className="setup-opt-help">
+                      {t('config.galeHelp', {
+                        ladder: Array.from({ length: Number(galeRounds) + 1 }, (_, i) =>
+                          formatCurrency(Number(entryAmount || 5) * Math.pow(2, i), currentCurrency)
+                        ).join(' → '),
+                      })}
+                    </p>
+                  )}
+                </div>
+                <Toggle active={galeEnabled} onChange={setGaleEnabled} />
+              </div>
+              {galeEnabled && (
+                <div className="setup-opt-extra">
                   <label>{t('config.galeRounds')}</label>
                   <input type="number" min="1" max="5" value={galeRounds} onChange={e => setGaleRounds(e.target.value)} />
-                  <span className="field-help">
-                    {t('config.galeHelp', {
-                      ladder: Array.from({ length: Number(galeRounds) + 1 }, (_, i) =>
-                        formatCurrency(Number(entryAmount || 5) * Math.pow(2, i), currentCurrency)
-                      ).join(' → '),
-                    })}
-                  </span>
                 </div>
-              </div>
-            )}
-          </div>
-
-          {FEATURE_FLAGS.SOROS_ENABLED && (
-          <div className="config-section">
-            <div className="config-section-title">
-              <span>{t('config.soros')}</span>
-              <Toggle active={sorosEnabled} onChange={setSorosEnabled} />
+              )}
             </div>
-            {sorosEnabled && (
-              <div className="field-row">
-                <div className="field-group">
-                  <label>{t('config.sorosLevels')}</label>
-                  <input
-                    type="number"
-                    min="1"
-                    max="3"
-                    value={sorosMaxLevel}
-                    onChange={e => setSorosMaxLevel(e.target.value)}
-                  />
-                  <span className="field-help">
-                    {t('config.sorosHelp')}
-                  </span>
+
+            {FEATURE_FLAGS.SOROS_ENABLED && (
+              <div className="setup-opt">
+                <div className="setup-opt-row">
+                  <div className="setup-opt-name">{t('config.soros')}</div>
+                  <Toggle active={sorosEnabled} onChange={setSorosEnabled} />
                 </div>
+                {sorosEnabled && (
+                  <div className="setup-opt-extra">
+                    <label>{t('config.sorosLevels')}</label>
+                    <input
+                      type="number"
+                      min="1"
+                      max="3"
+                      value={sorosMaxLevel}
+                      onChange={e => setSorosMaxLevel(e.target.value)}
+                    />
+                  </div>
+                )}
               </div>
             )}
-          </div>
-          )}
+          </section>
 
-          {/* Stops */}
-          <div className="config-section">
-            <div className="config-section-title">{t('config.risk')}</div>
-            <div className="field-row">
+          <section className="setup-block">
+            <div className="setup-block-label">{t('config.risk')}</div>
+            <div className="protect-grid">
               <div className="field-group">
                 <label>{t('config.stopLoss', { sym })}</label>
                 <input type="number" min="0" value={stopLoss} onChange={e => setStopLoss(e.target.value)} placeholder={t('config.disabledPh')} />
@@ -305,19 +276,19 @@ export default function ConfigPanel({ balances, onStart, onClose }: Props) {
                 <label>{t('config.stopWin', { sym })}</label>
                 <input type="number" min="0" value={stopWin} onChange={e => setStopWin(e.target.value)} placeholder={t('config.disabledPh')} />
               </div>
-              <div className="field-group field-sm">
+              <div className="field-group">
                 <label>{t('config.consecLosses')}</label>
                 <input type="number" min="0" value={stopConsec} onChange={e => setStopConsec(e.target.value)} placeholder={t('config.disabledPh')} />
               </div>
             </div>
-          </div>
-
+          </section>
         </div>
 
-        <div className="modal-footer">
-          <button className="btn-ghost" onClick={onClose}>{t('config.cancel')}</button>
+        <div className="modal-footer setup-foot">
+          <button type="button" className="btn-ghost" onClick={onClose}>{t('config.cancel')}</button>
           <button
-            className="btn-primary"
+            type="button"
+            className="btn-primary setup-start"
             onClick={handleStart}
             disabled={
               !anyStrategy ||
@@ -335,27 +306,22 @@ export default function ConfigPanel({ balances, onStart, onClose }: Props) {
   )
 }
 
-function StrategyToggle({ id, label, active, onChange, disabled }: {
-  id: string
+function StrategyToggle({ label, active, onChange, disabled }: {
   label: string
   active: boolean
   onChange: (v: boolean) => void
   disabled?: boolean
 }) {
   return (
-    <div
-      className={`strategy-card ${active ? 'on' : 'off'}${disabled ? ' disabled' : ''}`}
+    <button
+      type="button"
+      className={`strategy-chip${active ? ' on' : ''}${disabled ? ' disabled' : ''}`}
+      aria-pressed={active}
+      disabled={disabled}
       onClick={() => !disabled && onChange(!active)}
-      style={{
-        opacity: disabled ? 0.4 : 1,
-        cursor: disabled ? 'not-allowed' : 'pointer',
-      }}
     >
-      <div className="strategy-top">
-        <span className="strategy-name">{label}</span>
-        <div className={`toggle ${active ? 'on' : ''}`}><div className="toggle-knob" /></div>
-      </div>
-    </div>
+      {label}
+    </button>
   )
 }
 
