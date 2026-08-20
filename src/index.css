@@ -1708,6 +1708,8 @@ select option { background: var(--bg-card); }
   align-items: center;
   gap: 10px;
   flex-shrink: 0;
+  min-height: 36px;
+  min-width: 0;
 }
 
 .chart-pair {
@@ -1715,6 +1717,10 @@ select option { background: var(--bg-card); }
   font-size: 13px;
   font-weight: 700;
   color: var(--text);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .chart-tf {
@@ -1729,7 +1735,7 @@ select option { background: var(--bg-card); }
 .chart-container {
   flex: 1;
   width: 100%;
-  min-height: 200px;
+  min-height: 0;
   min-width: 0;
 }
 
@@ -1895,14 +1901,25 @@ select option { background: var(--bg-card); }
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 8px;
+  min-width: 0;
   background: var(--bg3);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 8px 12px;
 }
 
-.balance-label { font-size: 11px; color: var(--text3); }
-.balance-value { font-family: var(--font-mono); font-size: 14px; font-weight: 700; color: var(--text); }
+.balance-label { font-size: 11px; color: var(--text3); flex-shrink: 0; }
+.balance-value {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 
 /* ─── Trade Log ──────────────────────────────────────────────────────────── */
 .tradelog {
@@ -2465,13 +2482,14 @@ select option { background: var(--bg-card); }
   flex-direction: column;
 }
 .operacoes-dock {
-  flex: 0 0 min(32vh, 292px);
-  min-height: 220px;
+  flex: 0 1 clamp(280px, 38vh, 400px);
+  min-height: 0;
   display: grid;
-  grid-template-columns: minmax(240px, 1fr) minmax(220px, 0.9fr) minmax(260px, 1.15fr);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.95fr) minmax(0, 1.15fr);
   min-width: 0;
   overflow: hidden;
   border-top: 1px solid var(--sp-border);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 .operacoes-dock .scoreboard,
 .operacoes-dock .tradelog,
@@ -2485,7 +2503,7 @@ select option { background: var(--bg-card); }
 }
 .operacoes-dock .scoreboard {
   flex-shrink: 1;
-  overflow-y: auto;
+  overflow: hidden;
   border-bottom: none;
   border-right: 1px solid var(--sp-border);
 }
@@ -5582,11 +5600,12 @@ select.select-locked {
 
   .sb-action .btn-start,
   .sb-action .btn-stop {
-    width: auto;
-    min-width: 200px;
-    min-height: 0;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    min-height: 44px;
     height: auto;
-    padding: 14px 18px;
+    padding: 12px 14px;
   }
 
   .operacoes-body {
@@ -5619,7 +5638,7 @@ select.select-locked {
   }
 
   .chart-wrap {
-    min-height: 240px;
+    min-height: 160px;
   }
 
   .operacoes-dock .log-console {
@@ -5779,8 +5798,8 @@ select.select-locked {
   }
 
   .operacoes-chart {
-    flex: 1 1 52%;
-    min-height: 180px;
+    flex: 1 1 48%;
+    min-height: 140px;
   }
 
   .operacoes-dock {
@@ -6063,22 +6082,24 @@ select.select-locked {
   display: inline-flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
-  width: auto;
-  min-width: 200px;
+  gap: 12px;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
   height: auto;
-  min-height: 0;
-  padding: 16px 20px;
+  min-height: 44px;
+  padding: 10px 12px 10px 14px;
   border: 0;
   border-radius: 4px;
   cursor: pointer;
   font-family: var(--font-ui);
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
   letter-spacing: 1.2px;
   text-transform: uppercase;
   overflow: hidden;
   box-sizing: border-box;
+  white-space: nowrap;
   transform: none;
   filter: none;
   transition: opacity 0.16s ease, background 0.16s ease;
@@ -6103,8 +6124,8 @@ select.select-locked {
 }
 
 .members-shell .sb-action .btn-start-pulse {
-  width: 28px;
-  height: 28px;
+  width: 26px;
+  height: 26px;
   flex-shrink: 0;
   border-radius: 100%;
   display: flex;
@@ -6132,8 +6153,8 @@ select.select-locked {
 }
 
 .members-shell .sb-action .btn-stop-mark {
-  width: 28px;
-  height: 28px;
+  width: 26px;
+  height: 26px;
   flex-shrink: 0;
   border-radius: 100%;
   display: flex;
@@ -6146,16 +6167,14 @@ select.select-locked {
   0% {
     box-shadow:
       0 0 0 0 rgba(255, 255, 255, 0.18),
-      0 0 0 12px rgba(255, 255, 255, 0.12),
-      0 0 0 24px rgba(255, 255, 255, 0.08),
-      0 0 0 36px rgba(255, 255, 255, 0.04);
+      0 0 0 8px rgba(255, 255, 255, 0.12),
+      0 0 0 14px rgba(255, 255, 255, 0.08);
   }
   100% {
     box-shadow:
-      0 0 0 12px rgba(255, 255, 255, 0.12),
-      0 0 0 24px rgba(255, 255, 255, 0.08),
-      0 0 0 36px rgba(255, 255, 255, 0.04),
-      0 0 0 48px rgba(255, 255, 255, 0);
+      0 0 0 8px rgba(255, 255, 255, 0.12),
+      0 0 0 14px rgba(255, 255, 255, 0.08),
+      0 0 0 20px rgba(255, 255, 255, 0);
   }
 }
 
@@ -6168,6 +6187,12 @@ select.select-locked {
 .members-shell .operacoes-body {
   gap: 0;
   background: #000;
+}
+
+.members-shell .operacoes-chart {
+  flex: 1 1 0;
+  min-height: 140px;
+  min-width: 0;
 }
 
 .members-shell .operacoes-dock {
@@ -6189,21 +6214,32 @@ select.select-locked {
 }
 
 .members-shell .scoreboard {
-  padding: 12px 14px 12px;
+  padding: 10px 12px 12px;
   border-bottom: none;
+  min-width: 0;
 }
 
 .scoreboard--with-action {
   display: flex;
   flex-direction: column;
+  min-height: 0;
+}
+
+.sb-stack {
+  flex: 1 1 auto;
+  min-height: 0;
+  min-width: 0;
+  overflow: auto;
 }
 
 .sb-action {
-  margin-top: auto;
-  padding-top: 10px;
+  margin-top: 0;
+  padding-top: 8px;
   flex-shrink: 0;
   display: flex;
-  justify-content: center;
+  justify-content: stretch;
+  width: 100%;
+  min-width: 0;
 }
 
 .members-shell .operacoes-dock .pnl-display {
@@ -6239,9 +6275,10 @@ select.select-locked {
 .members-shell .pnl-value.win { color: #39FF14; text-shadow: 0 0 18px rgba(57, 255, 20, 0.28); }
 .members-shell .stats-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 6px;
   margin-bottom: 8px;
+  min-width: 0;
 }
 
 .members-shell .stat-cell {
@@ -6249,6 +6286,14 @@ select.select-locked {
   border-radius: 10px;
   border: 1px solid rgba(255, 255, 255, 0.05);
   background: rgba(255, 255, 255, 0.02);
+  min-width: 0;
+  overflow: hidden;
+}
+
+.members-shell .stat-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .members-shell .operacoes-dock .stat-value {
@@ -6257,6 +6302,13 @@ select.select-locked {
 
 .members-shell .operacoes-dock .scoreboard--with-action {
   overflow: hidden;
+}
+
+.members-shell .operacoes-dock .scoreboard--with-action .pnl-display,
+.members-shell .operacoes-dock .scoreboard--with-action .wl-bar-wrap,
+.members-shell .operacoes-dock .scoreboard--with-action .stats-grid,
+.members-shell .operacoes-dock .scoreboard--with-action .balance-row {
+  min-width: 0;
 }
 
 .members-shell .tradelog-header {
@@ -6288,6 +6340,19 @@ select.select-locked {
 .members-shell .trade-row {
   padding: 10px 14px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  min-width: 0;
+}
+
+.members-shell .trade-left,
+.members-shell .trade-right {
+  min-width: 0;
+}
+
+.members-shell .profit-val {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
 }
 
 .result-tag {
@@ -6343,6 +6408,42 @@ select.select-locked {
 .log-header-dots i:nth-child(1) { background: #f87171; }
 .log-header-dots i:nth-child(2) { background: #facc15; }
 .log-header-dots i:nth-child(3) { background: #39FF14; }
+
+@media (max-width: 1100px) {
+  .operacoes-dock {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.05fr);
+  }
+}
+
+@media (max-height: 820px) {
+  .operacoes-dock {
+    flex-basis: clamp(250px, 42vh, 360px);
+  }
+
+  .members-shell .scoreboard {
+    padding: 8px 10px 10px;
+  }
+
+  .members-shell .operacoes-dock .pnl-value {
+    font-size: 20px;
+  }
+
+  .members-shell .operacoes-dock .sb-header,
+  .members-shell .operacoes-dock .pnl-display,
+  .members-shell .operacoes-dock .wl-bar-wrap {
+    margin-bottom: 6px;
+  }
+}
+
+@media (max-height: 680px) {
+  .members-shell .operacoes-chart {
+    min-height: 110px;
+  }
+
+  .operacoes-dock {
+    flex: 1 1 48%;
+  }
+}
 
 /* ── Aulas studio ── */
 .members-shell .aulas-page--studio {

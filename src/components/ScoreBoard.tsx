@@ -21,53 +21,55 @@ export default function ScoreBoard({ status, activeBalance, currency = 'USD', ac
 
   return (
     <div className={`scoreboard${action ? ' scoreboard--with-action' : ''}`}>
-      <div className="sb-header">
-        <span className="sb-title">{t('score.title')}</span>
-        {status?.running && <span className="live-badge">{t('score.live')}</span>}
-      </div>
+      <div className="sb-stack">
+        <div className="sb-header">
+          <span className="sb-title">{t('score.title')}</span>
+          {status?.running && <span className="live-badge">{t('score.live')}</span>}
+        </div>
 
-      <div className="pnl-display">
-        <span className={`pnl-value ${pnl > 0 ? 'win' : pnl < 0 ? 'loss' : ''}`}>
-          {pnl >= 0 ? '+' : ''}{formatCurrency(pnl, currency)}
-        </span>
-        <span className="pnl-label">{t('score.pnl')}</span>
-      </div>
+        <div className="pnl-display">
+          <span className={`pnl-value ${pnl > 0 ? 'win' : pnl < 0 ? 'loss' : ''}`}>
+            {pnl >= 0 ? '+' : ''}{formatCurrency(pnl, currency)}
+          </span>
+          <span className="pnl-label">{t('score.pnl')}</span>
+        </div>
 
-      <div className="wl-bar-wrap">
-        <div className="wl-bar">
-          <div
-            className="wl-bar-fill win"
-            style={{ width: total > 0 ? `${winRate}%` : '0%' }}
-          />
+        <div className="wl-bar-wrap">
+          <div className="wl-bar">
+            <div
+              className="wl-bar-fill win"
+              style={{ width: total > 0 ? `${winRate}%` : '0%' }}
+            />
+          </div>
+          <div className="wl-rate">{t('score.accuracy', { rate: winRate })}</div>
         </div>
-        <div className="wl-rate">{t('score.accuracy', { rate: winRate })}</div>
-      </div>
 
-      <div className="stats-grid">
-        <div className="stat-cell">
-          <div className="stat-value win">{wins}</div>
-          <div className="stat-label">{t('score.wins')}</div>
+        <div className="stats-grid">
+          <div className="stat-cell">
+            <div className="stat-value win">{wins}</div>
+            <div className="stat-label">{t('score.wins')}</div>
+          </div>
+          <div className="stat-cell">
+            <div className="stat-value loss">{losses}</div>
+            <div className="stat-label">{t('score.losses')}</div>
+          </div>
+          <div className="stat-cell">
+            <div className="stat-value">{total}</div>
+            <div className="stat-label">{t('score.total')}</div>
+          </div>
+          <div className="stat-cell">
+            <div className="stat-value warning">{status?.consecLosses ?? 0}</div>
+            <div className="stat-label">{t('score.consec')}</div>
+          </div>
         </div>
-        <div className="stat-cell">
-          <div className="stat-value loss">{losses}</div>
-          <div className="stat-label">{t('score.losses')}</div>
-        </div>
-        <div className="stat-cell">
-          <div className="stat-value">{total}</div>
-          <div className="stat-label">{t('score.total')}</div>
-        </div>
-        <div className="stat-cell">
-          <div className="stat-value warning">{status?.consecLosses ?? 0}</div>
-          <div className="stat-label">{t('score.consec')}</div>
-        </div>
-      </div>
 
-      {balanceCurrent > 0 && (
-        <div className="balance-row">
-          <span className="balance-label">{t('score.balance')}</span>
-          <span className="balance-value">{formatCurrency(balanceCurrent, currency)}</span>
-        </div>
-      )}
+        {balanceCurrent > 0 && (
+          <div className="balance-row">
+            <span className="balance-label">{t('score.balance')}</span>
+            <span className="balance-value">{formatCurrency(balanceCurrent, currency)}</span>
+          </div>
+        )}
+      </div>
 
       {action ? <div className="sb-action">{action}</div> : null}
     </div>
