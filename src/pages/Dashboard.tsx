@@ -43,10 +43,10 @@ export default function Dashboard({ onDisconnect }: Props) {
     // Load initial data
     async function init() {
       setLoading(true)
-      const bRes = await window.claudePro.sdkBalances()
+      const bRes = await window.alphaCode.sdkBalances()
       if (bRes.ok && bRes.balances) setBalances(bRes.balances)
 
-      const s = await window.claudePro.botGetStatus()
+      const s = await window.alphaCode.botGetStatus()
       setStatus(s)
       setLoading(false)
     }
@@ -54,14 +54,14 @@ export default function Dashboard({ onDisconnect }: Props) {
 
     // Subscribe to events
     const unsubs = [
-      window.claudePro.on('bot:status',        (s) => setStatus(s)),
-      window.claudePro.on('bot:started',       (s) => { setStatus(s); addLog(tRef.current('ops.logStarted')) }),
-      window.claudePro.on('bot:stopped',       (s) => { setStatus(s); setDisplayBalanceId(null); addLog(tRef.current('ops.logStopped')) }),
-      window.claudePro.on('bot:trade_entered', (tr: TradeRecord) =>
+      window.alphaCode.on('bot:status',        (s) => setStatus(s)),
+      window.alphaCode.on('bot:started',       (s) => { setStatus(s); addLog(tRef.current('ops.logStarted')) }),
+      window.alphaCode.on('bot:stopped',       (s) => { setStatus(s); setDisplayBalanceId(null); addLog(tRef.current('ops.logStopped')) }),
+      window.alphaCode.on('bot:trade_entered', (tr: TradeRecord) =>
         addLog(tRef.current('ops.logEntry', { strategy: tr.strategy, direction: tr.direction, amount: formatCurrency(tr.amount, currencyRef.current) }))),
-      window.claudePro.on('bot:trade_result',  (tr: TradeRecord) =>
+      window.alphaCode.on('bot:trade_result',  (tr: TradeRecord) =>
         addLog(`[${tr.result}] ${tr.strategy} ${tr.direction} ${tr.profit >= 0 ? '+' : ''}${formatCurrency(tr.profit, currencyRef.current)}`)),
-      window.claudePro.on('bot:stop_triggered',(d: any) => {
+      window.alphaCode.on('bot:stop_triggered',(d: any) => {
         const map: Record<string, 'ops.stopReason.stop_loss' | 'ops.stopReason.stop_win' | 'ops.stopReason.consec_losses'> = {
           stop_loss: 'ops.stopReason.stop_loss',
           stop_win: 'ops.stopReason.stop_win',
@@ -70,9 +70,9 @@ export default function Dashboard({ onDisconnect }: Props) {
         const reasonKey = map[String(d.reason)]
         addLog(tRef.current('ops.logStop', { reason: reasonKey ? tRef.current(reasonKey) : String(d.reason ?? '') }))
       }),
-      window.claudePro.on('bot:log',           (m: string) => addLog(m)),
-      window.claudePro.on('bot:balance',       (v: number) => setActiveBalance(v)),
-      window.claudePro.on('bot:error',         (e: string) => addLog(tRef.current('ops.logError', { error: e }))),
+      window.alphaCode.on('bot:log',           (m: string) => addLog(m)),
+      window.alphaCode.on('bot:balance',       (v: number) => setActiveBalance(v)),
+      window.alphaCode.on('bot:error',         (e: string) => addLog(tRef.current('ops.logError', { error: e }))),
     ]
 
     return () => unsubs.forEach(u => u())
@@ -80,13 +80,13 @@ export default function Dashboard({ onDisconnect }: Props) {
 
   async function handleStart(config: BotConfig) {
     setConfigOpen(false)
-    const res = await window.claudePro.botStart(config)
+    const res = await window.alphaCode.botStart(config)
     if (!res.ok) addLog(t('ops.logError', { error: res.error ?? '' }))
     else setDisplayBalanceId(config.balanceId)
   }
 
   async function handleStop() {
-    await window.claudePro.botStop()
+    await window.alphaCode.botStop()
   }
 
   const isRunning = status?.running ?? false
@@ -96,8 +96,8 @@ export default function Dashboard({ onDisconnect }: Props) {
       {/* ── Top Bar ── */}
       <div className="topbar">
         <div className="topbar-logo">
-          <span className="brand-claude">Claude</span>
-          <span className="brand-pro">Pro</span>
+          <span className="brand-alpha">Alpha</span>
+          <span className="brand-code">Code</span>
         </div>
 
         <div className="topbar-pair">

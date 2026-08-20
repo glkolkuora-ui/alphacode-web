@@ -1,4 +1,4 @@
-/** Cliente HTTP + WebSocket que replica a API `window.claudePro` do Electron. */
+/** Cliente HTTP + WebSocket que replica a API `window.alphaCode` do Electron. */
 
 type Unsub = () => void
 
@@ -8,7 +8,7 @@ function emit(channel: string, payload: any) {
   const set = listeners.get(channel)
   if (!set) return
   for (const cb of set) {
-    try { cb(payload) } catch (err) { console.error('[claude-web]', channel, err) }
+    try { cb(payload) } catch (err) { console.error('[alpha-code]', channel, err) }
   }
 }
 
@@ -74,12 +74,12 @@ async function refreshSession() {
 
 void refreshSession().then(() => connectWs()).catch(() => scheduleWs())
 
-window.claudePro = {
+window.alphaCode = {
   appPlatform: 'web',
 
   brokerStartAuth: async () => {
     const email = (() => {
-      try { return localStorage.getItem('claudepro_licensed_email') || '' } catch { return '' }
+      try { return localStorage.getItem('alphacode_licensed_email') || '' } catch { return '' }
     })()
     return api<{ ok: boolean; url?: string; origin?: string; error?: string }>(
       '/api/auth/start',

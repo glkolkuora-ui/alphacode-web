@@ -1,4 +1,4 @@
-/* Service worker mínimo: torna o Claude Web instalável no Android
+/* Service worker mínimo: torna o Alpha Code instalável no Android
    sem interceptar API, WebSocket ou o fluxo ao vivo. */
 self.addEventListener('install', (event) => {
   event.waitUntil(self.skipWaiting())

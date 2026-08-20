@@ -68,10 +68,10 @@ function IconLogout({ className }: { className?: string }) {
 
 function SidebarLogoMark() {
   return (
-    <div className="sidebar-logo-mark" title="Claude Pro">
+    <div className="sidebar-logo-mark" title="Alpha Code">
       <img
         src={sidebarLogoIcon}
-        alt="Claude Pro"
+        alt="Alpha Code"
         className="sidebar-logo-img"
         draggable={false}
       />
@@ -132,7 +132,7 @@ export default function MainApp({ onLogout }: Props) {
   async function handleLogout() {
     try { sessionStorage.setItem('cw_need_broker_login', '1') } catch { /* ignore */ }
     try {
-      await window.claudePro?.brokerLogout()
+      await window.alphaCode?.brokerLogout()
     } catch {
       /* best-effort: mesmo com falha no IPC, o utilizador sai da conta */
     } finally {

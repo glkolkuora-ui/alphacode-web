@@ -37,27 +37,27 @@ export default function Operacoes() {
   useEffect(() => {
     async function init() {
       setLoading(true)
-      const bRes = await window.claudePro.sdkBalances()
+      const bRes = await window.alphaCode.sdkBalances()
       if (bRes.ok && bRes.balances) setBalances(bRes.balances)
-      setStatus(await window.claudePro.botGetStatus())
+      setStatus(await window.alphaCode.botGetStatus())
       setLoading(false)
     }
     init()
 
     const unsubs = [
-      window.claudePro.on('session:hello', (p: { running?: boolean }) => {
+      window.alphaCode.on('session:hello', (p: { running?: boolean }) => {
         if (p?.running) {
-          void window.claudePro.botGetStatus().then((s) => { if (s) setStatus(s) })
+          void window.alphaCode.botGetStatus().then((s) => { if (s) setStatus(s) })
         }
       }),
-      window.claudePro.on('bot:status',        s  => setStatus(s)),
-      window.claudePro.on('bot:started',        s  => { setStatus(s); addLog(tRef.current('ops.logStarted')) }),
-      window.claudePro.on('bot:stopped',        s  => { setStatus(s); setDisplayBalanceId(null); addLog(tRef.current('ops.logStopped')) }),
-      window.claudePro.on('bot:trade_entered', (t: TradeRecord) =>
+      window.alphaCode.on('bot:status',        s  => setStatus(s)),
+      window.alphaCode.on('bot:started',        s  => { setStatus(s); addLog(tRef.current('ops.logStarted')) }),
+      window.alphaCode.on('bot:stopped',        s  => { setStatus(s); setDisplayBalanceId(null); addLog(tRef.current('ops.logStopped')) }),
+      window.alphaCode.on('bot:trade_entered', (t: TradeRecord) =>
         addLog(tRef.current('ops.logEntry', { strategy: t.strategy, direction: t.direction, amount: formatCurrency(t.amount, currencyRef.current) }))),
-      window.claudePro.on('bot:trade_result',  (tr: TradeRecord) =>
+      window.alphaCode.on('bot:trade_result',  (tr: TradeRecord) =>
         addLog(`[${tr.result}] ${tr.strategy} ${tr.direction} ${tr.profit >= 0 ? '+' : ''}${formatCurrency(tr.profit, currencyRef.current)}`)),
-      window.claudePro.on('bot:stop_triggered',(d: any) => {
+      window.alphaCode.on('bot:stop_triggered',(d: any) => {
         const map: Record<string, 'ops.stopReason.stop_loss' | 'ops.stopReason.stop_win' | 'ops.stopReason.consec_losses'> = {
           stop_loss: 'ops.stopReason.stop_loss',
           stop_win: 'ops.stopReason.stop_win',
@@ -66,12 +66,12 @@ export default function Operacoes() {
         const reasonKey = map[String(d.reason)]
         addLog(tRef.current('ops.logStop', { reason: reasonKey ? tRef.current(reasonKey) : String(d.reason ?? '') }))
       }),
-      window.claudePro.on('bot:log',           (m: string) => addLog(m)),
-      window.claudePro.on('bot:balance',       (v: number) => setActiveBalance(v)),
-      window.claudePro.on('bot:error',         (e: string) => addLog(tRef.current('ops.logError', { error: e }))),
+      window.alphaCode.on('bot:log',           (m: string) => addLog(m)),
+      window.alphaCode.on('bot:balance',       (v: number) => setActiveBalance(v)),
+      window.alphaCode.on('bot:error',         (e: string) => addLog(tRef.current('ops.logError', { error: e }))),
     ]
     const poll = window.setInterval(() => {
-      void window.claudePro.botGetStatus().then((s) => { if (s) setStatus(s) })
+      void window.alphaCode.botGetStatus().then((s) => { if (s) setStatus(s) })
     }, 2000)
     return () => {
       unsubs.forEach(u => u())
@@ -81,23 +81,23 @@ export default function Operacoes() {
 
   async function handleStart(config: BotConfig) {
     setConfigOpen(false)
-    const res = await window.claudePro.botStart(config)
-    const statusRes = (res as any)?.status ?? await window.claudePro.botGetStatus()
+    const res = await window.alphaCode.botStart(config)
+    const statusRes = (res as any)?.status ?? await window.alphaCode.botGetStatus()
     if (statusRes) setStatus(statusRes)
     if (!res.ok) addLog(t('ops.logError', { error: res.error ?? '' }))
     else setDisplayBalanceId(config.balanceId)
   }
 
   async function handleStop() {
-    await window.claudePro.botStop()
-    const s = await window.claudePro.botGetStatus()
+    await window.alphaCode.botStop()
+    const s = await window.alphaCode.botGetStatus()
     if (s) setStatus(s)
   }
 
   async function openConfig() {
     setLoading(true)
     try {
-      const bRes = await window.claudePro.sdkBalances()
+      const bRes = await window.alphaCode.sdkBalances()
       if (bRes.ok && bRes.balances) setBalances(bRes.balances)
       else addLog(t('ops.logError', { error: bRes.error ?? 'Sem saldo da corretora' }))
     } finally {

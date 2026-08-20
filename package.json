@@ -2,7 +2,7 @@
   "name": "alpha-code",
   "version": "1.0.0",
   "private": true,
-  "description": "Alpha Code — mesmo painel do Claude Web, com o bot rodando no servidor",
+  "description": "Alpha Code — painel web com o bot rodando no servidor",
   "main": "dist/index.js",
   "scripts": {
     "dev": "concurrently -k -n web,api -c cyan,green \"npm run dev:web\" \"npm run dev:server\"",

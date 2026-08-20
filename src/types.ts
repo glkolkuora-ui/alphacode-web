@@ -43,7 +43,7 @@ export interface UpdateCheckResult {
 
 declare global {
   interface Window {
-    claudePro: {
+    alphaCode: {
       /** Plataforma (`darwin`, `win32`, `web`). */
       appPlatform: string
       brokerStartAuth: () => Promise<{ ok: boolean; error?: string }>

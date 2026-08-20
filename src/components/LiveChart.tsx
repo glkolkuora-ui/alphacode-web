@@ -124,7 +124,7 @@ export default function LiveChart({ activeId, activeTicker }: Props) {
     const reload = () => {
       const ready = syncSize()
       if (!ready) return
-      void window.claudePro.botChartSnapshot?.().then((candles) => {
+      void window.alphaCode.botChartSnapshot?.().then((candles) => {
         if (cancelled) return
         paint(candles)
       }).catch(() => { /* sem snapshot ainda — segue com eventos ao vivo */ })
@@ -133,18 +133,18 @@ export default function LiveChart({ activeId, activeTicker }: Props) {
     reloadRef.current = reload
     reload()
 
-    const unsubHistory = window.claudePro.on('bot:candles_history', (candles: RawCandle[]) => {
+    const unsubHistory = window.alphaCode.on('bot:candles_history', (candles: RawCandle[]) => {
       paint(candles)
     })
 
-    const unsubCandle = window.claudePro.on('bot:candle', (c: RawCandle) => {
+    const unsubCandle = window.alphaCode.on('bot:candle', (c: RawCandle) => {
       if (!seriesRef.current) return
       const [bar] = toBars([c])
       if (!bar) return
       seriesRef.current.update(bar)
     })
 
-    const unsubReset = window.claudePro.on('bot:chart_reset', () => {
+    const unsubReset = window.alphaCode.on('bot:chart_reset', () => {
       seriesRef.current?.setData([])
     })
 

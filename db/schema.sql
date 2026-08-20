@@ -1,4 +1,4 @@
--- Replica do schema public + auth.users do Claude Pro (Supabase).
+-- Replica do schema public + auth.users do Alpha Code (Supabase).
 -- O projeto original no Supabase permanece intacto.
 
 CREATE SCHEMA IF NOT EXISTS auth;
@@ -146,7 +146,7 @@ CREATE TABLE IF NOT EXISTS public.license_checks (
   email text NOT NULL,
   authorized boolean NOT NULL,
   products_count int DEFAULT 0,
-  has_claude_pro boolean DEFAULT false,
+  has_claude_pro boolean DEFAULT false, -- coluna já existente no banco; não renomear sem migration
   client_ip text,
   user_agent text,
   app_version text,

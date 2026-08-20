@@ -22,7 +22,7 @@ function MaterialTypeBadge({ type }: { type: string }) {
 
 async function openMaterialUrl(url: string) {
   try {
-    await window.claudePro?.appOpenExternal?.(url)
+    await window.alphaCode?.appOpenExternal?.(url)
   } catch (err) {
     console.error('[AULAS] Erro ao abrir material:', err)
   }
@@ -40,7 +40,7 @@ export default function Aulas() {
   const [playerEpoch, setPlayerEpoch] = useState(0)
 
   useEffect(() => {
-    void window.claudePro?.appGetEmbedOrigin?.()
+    void window.alphaCode?.appGetEmbedOrigin?.()
       .then((ctx) => setEmbedContext(ctx))
       .catch(() => {
         if (typeof window !== 'undefined' && window.location?.protocol !== 'file:') {
@@ -53,7 +53,7 @@ export default function Aulas() {
   }, [])
 
   useEffect(() => {
-    void window.claudePro?.appGetUserId?.().then(({ userId: uid }) => {
+    void window.alphaCode?.appGetUserId?.().then(({ userId: uid }) => {
       setUserId(uid)
     }).catch((err) => {
       console.error('[AULAS] Erro ao obter user_id:', err)
@@ -252,7 +252,7 @@ export default function Aulas() {
 
       <img
         src={bannerImg}
-        alt="Banner Membros Claude Pro"
+        alt="Banner Membros Alpha Code"
         className="aulas-banner"
       />
 

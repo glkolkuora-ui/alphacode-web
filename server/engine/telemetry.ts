@@ -21,7 +21,7 @@ let localFilePath: string | null = null
 
 function getLocalFilePath(): string {
   if (localFilePath) return localFilePath
-  const dir = process.env.DATA_DIR || path.join(os.tmpdir(), 'claude-web')
+  const dir = process.env.DATA_DIR || path.join(os.tmpdir(), 'alpha-code')
   try { fs.mkdirSync(dir, { recursive: true }) } catch { /* ignore */ }
   localFilePath = path.join(dir, 'telemetry.jsonl')
   return localFilePath

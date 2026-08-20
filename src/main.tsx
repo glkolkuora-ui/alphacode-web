@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import './lib/claude-api'
+import './lib/alpha-api'
 import App from './App'
 import { I18nProvider } from './i18n/I18nProvider'
 import './index.css'

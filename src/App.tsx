@@ -14,7 +14,7 @@ export default function App() {
   useLayoutEffect(() => {
     const root = document.documentElement
     root.classList.remove('electron-frame', 'electron-darwin', 'electron-win32')
-    const plat = typeof window !== 'undefined' ? window.claudePro?.appPlatform : undefined
+    const plat = typeof window !== 'undefined' ? window.alphaCode?.appPlatform : undefined
     if (plat !== 'darwin' && plat !== 'win32') return
     root.classList.add('electron-frame')
     if (plat === 'darwin') root.classList.add('electron-darwin')

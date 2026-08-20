@@ -14,6 +14,7 @@ import { useState } from 'react'
 import { supabase } from '../lib/supabase-client'
 import { useI18n } from '../i18n/I18nProvider'
 import LanguageSwitcher from '../components/LanguageSwitcher'
+import brandLogo from '../../img/LOGO.png'
 
 interface Profile {
   id: string
@@ -29,11 +30,7 @@ interface Props {
 
 function LogoMark() {
   return (
-    <svg className="login-supa-logo" viewBox="0 0 48 40" aria-hidden>
-      <rect className="login-supa-logo-bar login-supa-logo-bar--l" x="6" y="14" width="8" height="20" rx="2" />
-      <rect className="login-supa-logo-bar login-supa-logo-bar--c" x="20" y="6" width="8" height="28" rx="2" />
-      <rect className="login-supa-logo-bar login-supa-logo-bar--r" x="34" y="10" width="8" height="24" rx="2" />
-    </svg>
+    <img className="login-supa-logo" src={brandLogo} alt="" aria-hidden />
   )
 }
 
@@ -139,9 +136,9 @@ export default function LoginSupabase({ onLogin }: Props) {
 
         <header className="login-supa-header">
           <LogoMark />
-          <div className="login-supa-brand" aria-label="Claude Pro">
-            <span className="login-supa-brand-claude">CLAUDE</span>
-            <span className="login-supa-brand-pro">PRO</span>
+          <div className="login-supa-brand" aria-label="Alpha Code">
+            <span className="login-supa-brand-alpha">ALPHA</span>
+            <span className="login-supa-brand-code">CODE</span>
           </div>
           <h1 className="login-supa-title">{t('supa.title')}</h1>
           <p className="login-supa-sub">{t('supa.sub')}</p>
@@ -208,7 +205,7 @@ export default function LoginSupabase({ onLogin }: Props) {
         <p className="login-supa-legal">
           {t('supa.legal')}{' '}
           <a
-            href="https://claudepro.online"
+            href="#"
             target="_blank"
             rel="noopener noreferrer"
             className="login-supa-legal-link"

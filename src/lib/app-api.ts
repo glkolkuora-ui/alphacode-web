@@ -1,4 +1,4 @@
-/** Fetch JSON da API do Claude Web, com cookie de sessão. */
+/** Fetch JSON da API do Alpha Code, com cookie de sessão. */
 
 export async function appApi<T = any>(url: string, body?: unknown, method?: string): Promise<T> {
   const res = await fetch(url, {

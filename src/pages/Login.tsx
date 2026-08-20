@@ -37,8 +37,8 @@ export default function Login({ onLoggedIn }: Props) {
       onLoggedInRef.current()
     }
 
-    const unsubOk = window.claudePro.on('broker:connected', finish)
-    const unsubErr = window.claudePro.on('broker:error', (msg: string) => {
+    const unsubOk = window.alphaCode.on('broker:connected', finish)
+    const unsubErr = window.alphaCode.on('broker:error', (msg: string) => {
       setIsConnecting(false)
       setError(typeof msg === 'string' ? msg : String(msg))
       setStep('idle')
@@ -58,13 +58,13 @@ export default function Login({ onLoggedIn }: Props) {
       try { return sessionStorage.getItem('cw_need_broker_login') === '1' } catch { return false }
     })()
 
-    void window.claudePro.brokerIsConnected().then((res) => {
+    void window.alphaCode.brokerIsConnected().then((res) => {
       if (res.connected && !forceAuth) finish()
     })
 
     const poll = window.setInterval(() => {
       if (forceAuth) return
-      void window.claudePro.brokerIsConnected().then((res) => {
+      void window.alphaCode.brokerIsConnected().then((res) => {
         if (res.connected) finish()
       })
     }, 1500)
@@ -92,19 +92,19 @@ export default function Login({ onLoggedIn }: Props) {
     }
     try {
       tab.document.write(
-        '<!doctype html><title>Claude Pro</title><body style="margin:0;background:#0d0f14;color:#9196a8;font-family:system-ui;display:flex;align-items:center;justify-content:center;min-height:100vh">Abrindo autorização...</body>',
+        '<!doctype html><title>Alpha Code</title><body style="margin:0;background:#0d0f14;color:#9196a8;font-family:system-ui;display:flex;align-items:center;justify-content:center;min-height:100vh">Abrindo autorização...</body>',
       )
       tab.document.close()
     } catch { /* ignore */ }
 
     try {
       const savedEmail = (() => {
-        try { return localStorage.getItem('claudepro_licensed_email') || '' } catch { return '' }
+        try { return localStorage.getItem('alphacode_licensed_email') || '' } catch { return '' }
       })()
       if (savedEmail) {
-        try { await window.claudePro.setUserEmail(savedEmail) } catch { /* segue */ }
+        try { await window.alphaCode.setUserEmail(savedEmail) } catch { /* segue */ }
       }
-      const res = await window.claudePro.brokerStartAuth()
+      const res = await window.alphaCode.brokerStartAuth()
       if (!res.ok || !res.url) {
         try { tab.close() } catch { /* ignore */ }
         setIsConnecting(false)
@@ -139,8 +139,8 @@ export default function Login({ onLoggedIn }: Props) {
         ) : (
         <>
         <div className="login-brand">
-          <span className="brand-claude">Claude</span>
-          <span className="brand-pro">Pro</span>
+          <span className="brand-alpha">Alpha</span>
+          <span className="brand-code">Code</span>
         </div>
         <p className="login-tagline">{t('login.tagline')}</p>
         <p className="login-desc">{t('login.desc')}</p>

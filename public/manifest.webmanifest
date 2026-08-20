@@ -1,14 +1,14 @@
 {
   "id": "/",
-  "name": "Claude Pro",
-  "short_name": "Claude Pro",
-  "description": "Área de membros Claude Pro",
+  "name": "Alpha Code",
+  "short_name": "Alpha Code",
+  "description": "Área de membros Alpha Code",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait-primary",
-  "background_color": "#020818",
-  "theme_color": "#020818",
+  "background_color": "#000000",
+  "theme_color": "#000000",
   "lang": "pt-BR",
   "icons": [
     {

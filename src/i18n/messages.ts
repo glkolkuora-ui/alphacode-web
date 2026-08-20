@@ -23,7 +23,7 @@ const pt = {
   'nav.account': 'Conta',
   'nav.logout': 'Sair',
   'nav.language': 'Idioma',
-  'app.title': 'Claude Pro — Área de Membros',
+  'app.title': 'Alpha Code — Área de Membros',
 
   // license
   'license.checking': 'Verificando licença…',
@@ -148,7 +148,7 @@ const pt = {
 
   // aulas
   'lessons.title': 'Aulas',
-  'lessons.subtitle': 'Trilha completa de uso do Claude Pro',
+  'lessons.subtitle': 'Trilha completa de uso do Alpha Code',
   'lessons.loading': 'Carregando aulas...',
   'lessons.emptyTitle': 'Nenhuma aula disponível',
   'lessons.emptyDesc': 'Volte em breve — novos conteúdos serão publicados em breve.',
@@ -184,7 +184,7 @@ const pt = {
   'support.contactDesc': 'Entre em contato pelo canal oficial da Broker10.',
   'support.faq1q': 'O bot opera sozinho enquanto meu computador está ligado?',
   'support.faq1a':
-    'Sim. Deixe o Claude Pro aberto e ele opera automaticamente conforme as estratégias configuradas. Basta ter conexão com a internet.',
+    'Sim. Deixe o Alpha Code aberto e ele opera automaticamente conforme as estratégias configuradas. Basta ter conexão com a internet.',
   'support.faq2q': 'Posso usar conta demo para testar?',
   'support.faq2a':
     'A operação é feita apenas na conta real. Use banca controlada e as travas de risco (stop loss / stop win) para testar com segurança.',
@@ -224,7 +224,7 @@ const pt = {
   'notif.mins': '{n} min',
   'notif.hours': '{n} h',
   'notif.updateTitle': 'Atualização {version} disponível',
-  'notif.updateBody': 'Uma nova versão do Claude Pro está pronta para download.',
+  'notif.updateBody': 'Uma nova versão do Alpha Code está pronta para download.',
 
   // update modal
   'update.mandatory': 'Atualização obrigatória',
@@ -235,11 +235,11 @@ const pt = {
   'update.later': 'Depois',
   'update.download': 'Baixar agora',
 
-  'install.title': 'Instalar Claude Pro',
+  'install.title': 'Instalar Alpha Code',
   'install.androidBody': 'Coloque o app na tela inicial e abra como um aplicativo, sem a barra do navegador.',
   'install.androidCta': 'Instalar agora',
   'install.androidHint': 'No Chrome, toque em ⋮ e escolha Instalar app.',
-  'install.iosBody': 'No Safari, adicione o Claude Pro à Tela de Início para abrir como app.',
+  'install.iosBody': 'No Safari, adicione o Alpha Code à Tela de Início para abrir como app.',
   'install.iosStep1': 'Toque em Compartilhar',
   'install.iosStep2': 'Depois em Adicionar à Tela de Início',
   'install.dismiss': 'Agora não',
@@ -256,7 +256,7 @@ const en: Record<MessageKey, string> = {
   'nav.account': 'Account',
   'nav.logout': 'Log out',
   'nav.language': 'Language',
-  'app.title': 'Claude Pro — Members area',
+  'app.title': 'Alpha Code — Members area',
 
   'license.checking': 'Checking license…',
   'license.subtitle': 'Enter your email to access the tool.',
@@ -374,7 +374,7 @@ const en: Record<MessageKey, string> = {
   'config.demo': 'Demo',
 
   'lessons.title': 'Lessons',
-  'lessons.subtitle': 'Complete Claude Pro training path',
+  'lessons.subtitle': 'Complete Alpha Code training path',
   'lessons.loading': 'Loading lessons...',
   'lessons.emptyTitle': 'No lessons available',
   'lessons.emptyDesc': 'Check back soon — new content will be published shortly.',
@@ -409,7 +409,7 @@ const en: Record<MessageKey, string> = {
   'support.contactDesc': 'Get in touch through the official Broker10 channel.',
   'support.faq1q': 'Does the bot trade by itself while my computer is on?',
   'support.faq1a':
-    'Yes. Leave Claude Pro open and it trades automatically with the strategies you set. You only need an internet connection.',
+    'Yes. Leave Alpha Code open and it trades automatically with the strategies you set. You only need an internet connection.',
   'support.faq2q': 'Can I use a demo account to test?',
   'support.faq2a':
     'Trading is real-account only. Use a controlled bankroll and the risk locks (stop loss / stop win) to test safely.',
@@ -448,7 +448,7 @@ const en: Record<MessageKey, string> = {
   'notif.mins': '{n} min',
   'notif.hours': '{n} h',
   'notif.updateTitle': 'Update {version} available',
-  'notif.updateBody': 'A new version of Claude Pro is ready to download.',
+  'notif.updateBody': 'A new version of Alpha Code is ready to download.',
 
   'update.mandatory': 'Required update',
   'update.available': 'New version available',
@@ -458,11 +458,11 @@ const en: Record<MessageKey, string> = {
   'update.later': 'Later',
   'update.download': 'Download now',
 
-  'install.title': 'Install Claude Pro',
+  'install.title': 'Install Alpha Code',
   'install.androidBody': 'Add the app to your home screen and open it without the browser bar.',
   'install.androidCta': 'Install now',
   'install.androidHint': 'In Chrome, tap ⋮ and choose Install app.',
-  'install.iosBody': 'In Safari, add Claude Pro to your Home Screen to open it as an app.',
+  'install.iosBody': 'In Safari, add Alpha Code to your Home Screen to open it as an app.',
   'install.iosStep1': 'Tap Share',
   'install.iosStep2': 'Then Add to Home Screen',
   'install.dismiss': 'Not now',
@@ -477,7 +477,7 @@ const es: Record<MessageKey, string> = {
   'nav.account': 'Cuenta',
   'nav.logout': 'Salir',
   'nav.language': 'Idioma',
-  'app.title': 'Claude Pro — Área de miembros',
+  'app.title': 'Alpha Code — Área de miembros',
 
   'license.checking': 'Verificando licencia…',
   'license.subtitle': 'Escribe tu email para acceder a la herramienta.',
@@ -595,7 +595,7 @@ const es: Record<MessageKey, string> = {
   'config.demo': 'Demo',
 
   'lessons.title': 'Clases',
-  'lessons.subtitle': 'Ruta completa de uso de Claude Pro',
+  'lessons.subtitle': 'Ruta completa de uso de Alpha Code',
   'lessons.loading': 'Cargando clases...',
   'lessons.emptyTitle': 'No hay clases disponibles',
   'lessons.emptyDesc': 'Vuelve pronto — se publicarán nuevos contenidos en breve.',
@@ -630,7 +630,7 @@ const es: Record<MessageKey, string> = {
   'support.contactDesc': 'Contacta por el canal oficial de Broker10.',
   'support.faq1q': '¿El bot opera solo mientras el ordenador está encendido?',
   'support.faq1a':
-    'Sí. Deja Claude Pro abierto y opera automáticamente según las estrategias configuradas. Solo necesitas conexión a internet.',
+    'Sí. Deja Alpha Code abierto y opera automáticamente según las estrategias configuradas. Solo necesitas conexión a internet.',
   'support.faq2q': '¿Puedo usar una cuenta demo para probar?',
   'support.faq2a':
     'La operación es solo en cuenta real. Usa una banca controlada y los bloqueos de riesgo (stop loss / stop win) para probar con seguridad.',
@@ -669,7 +669,7 @@ const es: Record<MessageKey, string> = {
   'notif.mins': '{n} min',
   'notif.hours': '{n} h',
   'notif.updateTitle': 'Actualización {version} disponible',
-  'notif.updateBody': 'Hay una nueva versión de Claude Pro lista para descargar.',
+  'notif.updateBody': 'Hay una nueva versión de Alpha Code lista para descargar.',
 
   'update.mandatory': 'Actualización obligatoria',
   'update.available': 'Nueva versión disponible',
@@ -679,11 +679,11 @@ const es: Record<MessageKey, string> = {
   'update.later': 'Después',
   'update.download': 'Descargar ahora',
 
-  'install.title': 'Instalar Claude Pro',
+  'install.title': 'Instalar Alpha Code',
   'install.androidBody': 'Pon la app en la pantalla de inicio y ábrela sin la barra del navegador.',
   'install.androidCta': 'Instalar ahora',
   'install.androidHint': 'En Chrome, toca ⋮ y elige Instalar app.',
-  'install.iosBody': 'En Safari, añade Claude Pro a la pantalla de inicio para abrirla como app.',
+  'install.iosBody': 'En Safari, añade Alpha Code a la pantalla de inicio para abrirla como app.',
   'install.iosStep1': 'Toca Compartir',
   'install.iosStep2': 'Luego Añadir a pantalla de inicio',
   'install.dismiss': 'Ahora no',

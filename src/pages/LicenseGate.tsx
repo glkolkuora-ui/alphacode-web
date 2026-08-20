@@ -15,19 +15,20 @@ import { FEATURE_FLAGS } from '../feature-flags'
 import { appApi } from '../lib/app-api'
 import { useI18n } from '../i18n/I18nProvider'
 import LanguageSwitcher from '../components/LanguageSwitcher'
+import brandLogo from '../../img/LOGO.png'
 
 interface Props {
   onAuthorized: (email: string) => void
 }
 
-const STORAGE_KEY = 'claudepro_licensed_email'
+const STORAGE_KEY = 'alphacode_licensed_email'
 const EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]+$/
 
 async function authorizeEmail(emailToCheck: string, onAuthorized: (email: string) => void) {
   const normalized = emailToCheck.trim().toLowerCase()
   localStorage.setItem(STORAGE_KEY, normalized)
   try {
-    await window.claudePro?.setUserEmail?.(normalized)
+    await window.alphaCode?.setUserEmail?.(normalized)
   } catch {
     /* ignore */
   }
@@ -36,11 +37,7 @@ async function authorizeEmail(emailToCheck: string, onAuthorized: (email: string
 
 function LogoMark() {
   return (
-    <svg className="lic-gate-logo" viewBox="0 0 48 40" aria-hidden>
-      <rect className="lic-gate-logo-bar lic-gate-logo-bar--l" x="6" y="14" width="8" height="20" rx="2" />
-      <rect className="lic-gate-logo-bar lic-gate-logo-bar--c" x="20" y="6" width="8" height="28" rx="2" />
-      <rect className="lic-gate-logo-bar lic-gate-logo-bar--r" x="34" y="10" width="8" height="24" rx="2" />
-    </svg>
+    <img className="lic-gate-logo" src={brandLogo} alt="" aria-hidden />
   )
 }
 
@@ -96,7 +93,7 @@ export default function LicenseGate({ onAuthorized }: Props) {
 
     try {
       const appVersion =
-        (typeof window !== 'undefined' && (window as any).claudePro?.appPlatform)
+        (typeof window !== 'undefined' && window.alphaCode?.appPlatform)
           ? '1.0.0'
           : 'web'
 
@@ -149,7 +146,7 @@ export default function LicenseGate({ onAuthorized }: Props) {
         <div className="lic-gate-accent" aria-hidden />
         <header className="lic-gate-header">
           <LogoMark />
-          <h1 className="lic-gate-title">Claude Pro</h1>
+          <h1 className="lic-gate-title">Alpha Code</h1>
         </header>
         <div className="lic-gate-loading">
           <div className="lic-gate-spinner" />
@@ -165,7 +162,7 @@ export default function LicenseGate({ onAuthorized }: Props) {
 
       <header className="lic-gate-header">
         <LogoMark />
-        <h1 className="lic-gate-title">Claude Pro</h1>
+        <h1 className="lic-gate-title">Alpha Code</h1>
         <p className="lic-gate-sub">
           {t('license.subtitle')}
         </p>
@@ -204,7 +201,7 @@ export default function LicenseGate({ onAuthorized }: Props) {
         <p>
           {t('license.footer')}{' '}
           <a
-            href="https://claudepro.online"
+            href="#"
             target="_blank"
             rel="noopener noreferrer"
             className="lic-gate-footer-link"

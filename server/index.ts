@@ -194,7 +194,7 @@ app.get('/auth/callback', async (req, res) => {
     emitBrokerConnected(session)
     const origin = publicOrigin(req)
     res.type('html').send(`<!doctype html>
-<html lang="pt-BR"><head><meta charset="utf-8"><title>Claude Pro</title></head>
+<html lang="pt-BR"><head><meta charset="utf-8"><title>Alpha Code</title></head>
 <body style="background:#0d0f14;color:#e2e4ea;font-family:system-ui;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0">
 <p id="msg">Conectado. Fechando esta guia...</p>
 <script>
@@ -207,7 +207,7 @@ app.get('/auth/callback', async (req, res) => {
   } catch (e) {}
   window.close()
   setTimeout(function () {
-    document.getElementById('msg').textContent = 'Pode fechar esta guia e voltar ao Claude Pro.'
+    document.getElementById('msg').textContent = 'Pode fechar esta guia e voltar ao Alpha Code.'
   }, 400)
 </script>
 </body></html>`)

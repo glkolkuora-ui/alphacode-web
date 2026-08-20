@@ -16,7 +16,7 @@ export default function UpdateModal() {
     let cancelled = false
     ;(async () => {
       try {
-        const res = await window.claudePro.appGetVersion()
+        const res = await window.alphaCode.appGetVersion()
         if (!cancelled) setCurrent(res?.version ?? null)
       } catch { /* silencioso */ }
     })()
@@ -25,7 +25,7 @@ export default function UpdateModal() {
 
   const checkForUpdate = useCallback(async () => {
     try {
-      const res = await window.claudePro.appCheckUpdate()
+      const res = await window.alphaCode.appCheckUpdate()
       if (res.ok && res.needs_update) {
         setInfo(res)
         setDismissed(false)            // reabre se for nova versão (mandatory ou não)

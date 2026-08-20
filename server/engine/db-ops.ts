@@ -54,7 +54,7 @@ export async function upsertUserByEmail(email: string): Promise<string> {
         randomUUID(),
         now,
         JSON.stringify({ provider: 'email', providers: ['email'] }),
-        JSON.stringify({ source: 'claude-web' }),
+        JSON.stringify({ source: 'alpha-code' }),
       ],
     )
     await db.query(

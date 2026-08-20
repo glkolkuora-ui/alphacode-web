@@ -8,7 +8,7 @@ import {
   type MessageKey,
 } from './messages'
 
-const STORAGE_KEY = 'claudepro:locale'
+const STORAGE_KEY = 'alphacode:locale'
 
 function readStoredLocale(): Locale {
   try {
@@ -33,13 +33,13 @@ export function I18nProvider({ children }: { children: ReactNode }) {
   const setLocale = useCallback((next: Locale) => {
     setLocaleState(next)
     try { localStorage.setItem(STORAGE_KEY, next) } catch { /* ignore */ }
-    void window.claudePro?.appSetLocale?.(next)
+    void window.alphaCode?.appSetLocale?.(next)
   }, [])
 
   useEffect(() => {
     document.documentElement.lang = BCP47[locale]
     document.title = interpolate(MESSAGES[locale]['app.title'] ?? MESSAGES.pt['app.title'])
-    void window.claudePro?.appSetLocale?.(locale)
+    void window.alphaCode?.appSetLocale?.(locale)
   }, [locale])
 
   const t = useCallback((key: MessageKey, vars?: Record<string, string | number>) => {

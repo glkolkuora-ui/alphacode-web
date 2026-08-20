@@ -8,7 +8,7 @@ export const BROKER_CONFIG = {
   clientId:     350522037064121,
   /**
    * Secret só no servidor (Railway BROKER_CLIENT_SECRET).
-   * USE_EDGE_AUTH=false neste fork: o refresh não passa pelo vault do Claude Pro.
+   * USE_EDGE_AUTH=false neste fork: o refresh não passa pelo vault do Alpha Code.
    */
   clientSecret: process.env.BROKER_CLIENT_SECRET ?? '',
   platformId:   482,

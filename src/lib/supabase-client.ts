@@ -11,7 +11,7 @@ export { SUPABASE_URL, SUPABASE_ANON_KEY }
 export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
   auth: {
     persistSession: true,
-    storageKey: 'claudepro-auth',
+    storageKey: 'alphacode-auth',
     autoRefreshToken: true,
     detectSessionInUrl: false,
   },

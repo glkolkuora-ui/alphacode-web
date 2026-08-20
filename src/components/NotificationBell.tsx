@@ -2,7 +2,7 @@
 // NotificationBell — sino de notificações.
 //
 // Arquitetura:
-//   1. Pega o user_id do main (window.claudePro.appGetUserId)
+//   1. Pega o user_id do main (window.alphaCode.appGetUserId)
 //   2. Chama /api/notifications/* no servidor (Postgres Railway)
 
 //   3. Polling de 60s — sem dependência de auth Supabase no renderer
@@ -22,8 +22,8 @@ import type { MessageKey } from '../i18n/messages'
 
 const SYS_UPDATE_PREFIX = '__update__:'
 const UPDATE_KEY_PREFIX = 'update:'
-const LS_UPDATE_DISMISSED = 'claudepro_update_dismissed_version'
-const LS_DISMISSED = 'claudepro_notif_dismissed_v2'
+const LS_UPDATE_DISMISSED = 'alphacode_update_dismissed_version'
+const LS_DISMISSED = 'alphacode_notif_dismissed_v2'
 
 type DismissedBucket = { notificationIds: string[]; itemKeys: string[] }
 type DismissedStore = Record<string, DismissedBucket>
@@ -198,8 +198,8 @@ async function openInBrowser(url: string): Promise<void> {
   const trimmed = url.trim()
   if (!trimmed) return
   try {
-    if (typeof window.claudePro?.appOpenExternal === 'function') {
-      const res = await window.claudePro.appOpenExternal(trimmed)
+    if (typeof window.alphaCode?.appOpenExternal === 'function') {
+      const res = await window.alphaCode.appOpenExternal(trimmed)
       if (res.ok) return
     }
   } catch { /* fallback abaixo */ }
@@ -248,7 +248,7 @@ function NotificationBellActive() {
     let cancelled = false
     ;(async () => {
       try {
-        const res = await window.claudePro.appGetUserId()
+        const res = await window.alphaCode.appGetUserId()
         if (!cancelled) setUserId(res?.userId ?? null)
       } catch {
         if (!cancelled) setUserId(null)
@@ -261,8 +261,8 @@ function NotificationBellActive() {
     try {
       const [data, updateRes] = await Promise.all([
         callNotifApi('list', { user_id: uid }),
-        FEATURE_FLAGS.UPDATE_CHECK_ENABLED && typeof window.claudePro?.appCheckUpdate === 'function'
-          ? window.claudePro.appCheckUpdate().catch(() => null)
+        FEATURE_FLAGS.UPDATE_CHECK_ENABLED && typeof window.alphaCode?.appCheckUpdate === 'function'
+          ? window.alphaCode.appCheckUpdate().catch(() => null)
           : Promise.resolve(null),
       ])
 
@@ -397,8 +397,8 @@ function NotificationBellActive() {
         }
       }
 
-      if (FEATURE_FLAGS.UPDATE_CHECK_ENABLED && typeof window.claudePro?.appCheckUpdate === 'function') {
-        const updateRes = await window.claudePro.appCheckUpdate().catch(() => null)
+      if (FEATURE_FLAGS.UPDATE_CHECK_ENABLED && typeof window.alphaCode?.appCheckUpdate === 'function') {
+        const updateRes = await window.alphaCode.appCheckUpdate().catch(() => null)
         if (updateRes?.ok && updateRes.needs_update && updateRes.latest_version) {
           const key = updateDismissKey(updateRes.latest_version)
           itemKeys.push(key)

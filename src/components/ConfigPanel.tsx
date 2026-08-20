@@ -15,7 +15,7 @@ function activeOpenFor(a: ActiveInfo, ins: 'binary' | 'digital'): boolean {
 }
 
 // ── Persistência das configurações do bot ──────────────────────────────────
-const CONFIG_STORAGE_KEY = 'claudepro:botConfig'
+const CONFIG_STORAGE_KEY = 'alphacode:botConfig'
 
 interface PersistedConfig {
   activeId?: number
@@ -92,7 +92,7 @@ export default function ConfigPanel({ balances, onStart, onClose }: Props) {
   useEffect(() => {
     let cancelled = false
     ;(async () => {
-      const res = await window.claudePro.sdkActives(instrument)
+      const res = await window.alphaCode.sdkActives(instrument)
       if (cancelled) return
       if (res.ok && res.actives) {
         setActives(res.actives)
