@@ -5137,6 +5137,9 @@ select.select-locked {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  min-width: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 .tradelog-empty {
@@ -5156,11 +5159,14 @@ select.select-locked {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 11px 13px 11px 15px;
+  padding: 10px 12px 10px 14px;
   border: 1px solid var(--sp-border);
-  border-radius: var(--radius-md);
+  border-radius: 10px;
   background: linear-gradient(180deg, rgba(12, 24, 52, 0.72) 0%, rgba(6, 14, 34, 0.72) 100%);
-  overflow: hidden;
+  overflow: visible;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
   transition: transform 0.12s ease, border-color 0.12s ease, background 0.12s ease;
 }
 .trade-row::before {
@@ -5170,6 +5176,7 @@ select.select-locked {
   top: 0;
   bottom: 0;
   width: 3px;
+  border-radius: 10px 0 0 10px;
 }
 .trade-row.win::before     { background: var(--win); }
 .trade-row.loss::before    { background: var(--loss); }
@@ -5217,7 +5224,13 @@ select.select-locked {
   border: 1px solid var(--sp-border);
 }
 
-.trade-center { flex: 1; display: flex; justify-content: flex-start; }
+.trade-center {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  justify-content: flex-start;
+  overflow: hidden;
+}
 .result-tag {
   display: inline-flex;
   align-items: center;
@@ -5235,22 +5248,33 @@ select.select-locked {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: 3px;
-  flex-shrink: 0;
+  justify-content: center;
+  gap: 2px;
+  flex: 0 0 auto;
+  min-width: max-content;
 }
 .profit-val {
-  font-family: var(--font-mono);
+  display: block;
+  font-family: var(--font-ui);
   font-size: 13px;
-  font-weight: 800;
-  letter-spacing: 0.3px;
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: 1.35;
+  white-space: nowrap;
+  overflow: visible;
+  text-shadow: none;
+  -webkit-text-stroke: 0;
 }
 .profit-val.win  { color: var(--win); }
 .profit-val.loss { color: var(--loss); }
 .trade-time {
+  display: block;
   font-size: 10px;
+  line-height: 1.35;
   color: var(--text-muted);
-  font-family: var(--font-mono);
-  letter-spacing: 0.5px;
+  font-family: var(--font-ui);
+  letter-spacing: 0.02em;
+  white-space: nowrap;
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -6338,21 +6362,29 @@ select.select-locked {
 }
 
 .members-shell .trade-row {
-  padding: 10px 14px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  padding: 10px 12px 10px 14px;
+  border-bottom: none;
   min-width: 0;
+  overflow: visible;
 }
 
-.members-shell .trade-left,
-.members-shell .trade-right {
+.members-shell .trade-left {
   min-width: 0;
+  flex: 0 1 auto;
+}
+
+.members-shell .trade-right {
+  min-width: max-content;
+  flex: 0 0 auto;
 }
 
 .members-shell .profit-val {
-  overflow: hidden;
-  text-overflow: ellipsis;
+  overflow: visible;
+  text-overflow: unset;
   white-space: nowrap;
-  max-width: 100%;
+  max-width: none;
+  line-height: 1.35;
+  text-shadow: none;
 }
 
 .result-tag {
