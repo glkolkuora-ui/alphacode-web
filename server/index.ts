@@ -114,9 +114,10 @@ function requireSession(req: express.Request, res: express.Response): Session | 
   return session
 }
 
-app.get('/api/health', async (_req, res) => {
-  const db = await pingDb()
-  res.json({ ok: true, service: 'alpha-code', db })
+app.get('/api/health', (_req, res) => {
+  // Resposta imediata: o healthcheck do Railway não pode esperar o Postgres.
+  res.status(200).json({ ok: true, service: 'alpha-code' })
+  void pingDb().catch(() => {})
 })
 
 app.get('/api/session', (req, res) => {
@@ -406,10 +407,18 @@ app.post('/api/check-update', async (_req, res) => {
 
 const publicDir = path.join(__dirname, 'public')
 if (fs.existsSync(publicDir)) {
-  app.use(express.static(publicDir))
+  app.use(express.static(publicDir, {
+    index: false,
+    setHeaders(res, filePath) {
+      if (filePath.endsWith('index.html')) {
+        res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate')
+      }
+    },
+  }))
   app.use((req, res, next) => {
     if (req.method !== 'GET' && req.method !== 'HEAD') return next()
     if (req.path.startsWith('/api') || req.path.startsWith('/ws') || req.path.startsWith('/auth')) return next()
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate')
     res.sendFile(path.join(publicDir, 'index.html'))
   })
 }
