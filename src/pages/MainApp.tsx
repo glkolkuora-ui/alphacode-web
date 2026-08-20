@@ -1,9 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import Operacoes from './Operacoes'
 import Aulas from './Aulas'
 import Suporte from './Suporte'
 import NotificationBell from '../components/NotificationBell'
-import LanguageSwitcher from '../components/LanguageSwitcher'
 import { useI18n } from '../i18n/I18nProvider'
 import sidebarLogoIcon from '../../img/logo icone.png'
 
@@ -88,14 +87,13 @@ const NAV: { id: Tab; labelKey: 'nav.aulas' | 'nav.operacoes' | 'nav.suporte'; i
 function AccountTools({ onLogout }: { onLogout: () => void }) {
   const { t } = useI18n()
   return (
-    <>
-      <LanguageSwitcher variant="sidebar" />
-      <div className="sidebar-account">
-        <span className="sidebar-account-label">{t('nav.account')}</span>
-        <div className="sidebar-account-row">
-          <span className="sidebar-account-avatar" aria-hidden>C</span>
-          <span className="sidebar-account-line">Broker10</span>
-        </div>
+    <div className="sidebar-tools">
+      <div
+        className="sidebar-account"
+        title={t('nav.account')}
+        aria-label={t('nav.account')}
+      >
+        <span className="sidebar-account-avatar" aria-hidden>A</span>
       </div>
       <div className="sidebar-notify-slot">
         <NotificationBell />
@@ -105,27 +103,17 @@ function AccountTools({ onLogout }: { onLogout: () => void }) {
         className="sidebar-logout-btn"
         onClick={() => void onLogout()}
         aria-label={t('nav.logout')}
+        title={t('nav.logout')}
       >
         <IconLogout className="sidebar-logout-icon" />
       </button>
-    </>
+    </div>
   )
 }
 
 export default function MainApp({ onLogout }: Props) {
   const { t } = useI18n()
   const [tab, setTab] = useState<Tab>('operacoes')
-  const [compact, setCompact] = useState(() =>
-    typeof window !== 'undefined' && window.matchMedia('(max-width: 860px)').matches,
-  )
-
-  useEffect(() => {
-    const mq = window.matchMedia('(max-width: 860px)')
-    const onChange = () => setCompact(mq.matches)
-    onChange()
-    mq.addEventListener('change', onChange)
-    return () => mq.removeEventListener('change', onChange)
-  }, [])
 
   /** Sair da conta: logout COMPLETO — para o bot, encerra a sessão e descarta os
    *  tokens, exigindo nova autenticação (email/senha) no próximo login. */
@@ -141,23 +129,12 @@ export default function MainApp({ onLogout }: Props) {
   }
 
   return (
-    <div className={`mainapp members-shell${compact ? ' members-shell--compact' : ''}`}>
-      {compact && (
-        <header className="members-topbar">
-          <SidebarLogoMark />
-          <div className="members-topbar-actions">
-            <AccountTools onLogout={handleLogout} />
-          </div>
-        </header>
-      )}
-
+    <div className="mainapp members-shell">
       <aside className="members-sidebar" aria-label={t('nav.main')}>
         <div className="members-sidebar-pill members-sidebar-pill--floating">
-          {!compact && (
-            <div className="sidebar-zone sidebar-zone--brand">
-              <SidebarLogoMark />
-            </div>
-          )}
+          <div className="sidebar-zone sidebar-zone--brand">
+            <SidebarLogoMark />
+          </div>
 
           <nav className="sidebar-zone sidebar-zone--nav" aria-label={t('nav.sections')}>
             {NAV.map(({ id, labelKey, icon: Icon }) => {
@@ -185,24 +162,21 @@ export default function MainApp({ onLogout }: Props) {
             })}
           </nav>
 
-          {!compact && (
-            <div className="sidebar-zone sidebar-zone--footer">
-              <div className="sidebar-footer-sep" aria-hidden />
-              <AccountTools onLogout={handleLogout} />
-            </div>
-          )}
+          <div className="sidebar-zone sidebar-zone--footer">
+            <AccountTools onLogout={handleLogout} />
+          </div>
         </div>
       </aside>
 
       <div className="members-main">
         <div className="mainapp-body">
-          <div className="tab-panel" style={{ display: tab === 'aulas' ? 'contents' : 'none' }}>
+          <div className="tab-panel" hidden={tab !== 'aulas'}>
             <Aulas />
           </div>
-          <div className="tab-panel" style={{ display: tab === 'operacoes' ? 'contents' : 'none' }}>
+          <div className="tab-panel" hidden={tab !== 'operacoes'}>
             <Operacoes />
           </div>
-          <div className="tab-panel" style={{ display: tab === 'suporte' ? 'contents' : 'none' }}>
+          <div className="tab-panel" hidden={tab !== 'suporte'}>
             <Suporte />
           </div>
         </div>

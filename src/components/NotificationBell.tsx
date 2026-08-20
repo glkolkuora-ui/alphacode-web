@@ -298,23 +298,18 @@ function NotificationBellActive() {
     const margin = 12
     const vw = window.innerWidth
     const vh = window.innerHeight
-    const mobile = vw < 860
-    const panelW = mobile ? Math.min(vw - margin * 2, 400) : PANEL_W
+    const panelW = Math.min(vw - margin * 2, PANEL_W)
 
-    let left = mobile ? (vw - panelW) / 2 : rect.right + gap
-    if (!mobile && left + panelW > vw - margin) {
-      left = rect.left - panelW - gap
-    }
+    let left = rect.right - panelW
     if (left < margin) left = margin
+    if (left + panelW > vw - margin) left = vw - panelW - margin
 
     const panelH = Math.min(
       panelRef.current?.offsetHeight || PANEL_MAX_H,
       vh - margin * 2,
     )
 
-    let top = mobile
-      ? Math.min(rect.bottom + gap, vh - panelH - margin)
-      : rect.top + rect.height / 2 - panelH / 2
+    let top = rect.bottom + gap
     const maxTop = vh - panelH - margin
     if (top > maxTop) top = maxTop
     if (top < margin) top = margin

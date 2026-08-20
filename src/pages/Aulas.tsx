@@ -4,8 +4,6 @@ import type { ModuleWithLessons, Lesson, LessonMaterial } from '../types/lessons
 import { resolveLessonVideoId, youtubeEmbedSrc } from '../lib/youtube'
 import { useI18n } from '../i18n/I18nProvider'
 import type { MessageKey } from '../i18n/messages'
-import bannerImg from '../assets/banner.png'
-
 const MATERIAL_KEYS: Record<string, MessageKey> = {
   pdf: 'lessons.mat.pdf',
   sheet: 'lessons.mat.sheet',
@@ -194,7 +192,7 @@ export default function Aulas() {
 
   if (loading) {
     return (
-      <div className="aulas-page page-content">
+      <div className="aulas-page aulas-page--studio page-content">
         <div className="aulas-loading-state">
           <div className="aulas-loading-spinner" aria-hidden />
           <p>{t('lessons.loading')}</p>
@@ -205,7 +203,7 @@ export default function Aulas() {
 
   if (modules.length === 0) {
     return (
-      <div className="aulas-page page-content">
+      <div className="aulas-page aulas-page--studio page-content">
         <div className="aulas-empty-state">
           <p className="aulas-empty-title">{t('lessons.emptyTitle')}</p>
           <p className="aulas-empty-desc">{t('lessons.emptyDesc')}</p>
@@ -230,201 +228,217 @@ export default function Aulas() {
     })
   }
 
+  const curriculum = (
+    <section className="aulas-trilha" aria-label={t('lessons.trackAria')}>
+      <h2 className="aulas-trilha-title">{t('lessons.trackTitle')}</h2>
+      <p className="aulas-trilha-hint">{t('lessons.trackHint')}</p>
+      <div className="aulas-trilha-list">
+        {modules.map((module) => (
+          <div key={module.id} className="module-section">
+            <button
+              type="button"
+              onClick={() => toggleModule(module.id)}
+              className="module-header"
+              aria-expanded={expandedModules.has(module.id)}
+            >
+              <span className="module-chevron" aria-hidden>
+                <svg viewBox="0 0 16 16">
+                  {expandedModules.has(module.id)
+                    ? <path d="M4 6l4 4 4-4" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                    : <path d="M6 4l4 4-4 4" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />}
+                </svg>
+              </span>
+              <span className="module-title">{module.title}</span>
+              <span className="module-counter">
+                {module.lessons.filter((l) => watchedIds.has(l.id)).length}/{module.lessons.length}
+              </span>
+            </button>
+
+            {expandedModules.has(module.id) && (
+              <div className="module-lessons">
+                {module.lessons.length === 0 ? (
+                  <p className="module-lessons-empty">{t('lessons.noLessonsInModule')}</p>
+                ) : (
+                  module.lessons.map((lesson, idx) => (
+                    <button
+                      key={lesson.id}
+                      type="button"
+                      onClick={() => selectLesson(lesson)}
+                      className={[
+                        'lesson-item',
+                        selectedLesson?.id === lesson.id ? 'active' : '',
+                      ].join(' ')}
+                    >
+                      <span
+                        className={[
+                          'lesson-status',
+                          watchedIds.has(lesson.id) ? 'is-watched' : '',
+                        ].join(' ')}
+                        aria-hidden
+                      >
+                        {watchedIds.has(lesson.id) ? (
+                          <svg viewBox="0 0 16 16"><path d="M3.5 8.5 6.5 11.5 12.5 4.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" /></svg>
+                        ) : (
+                          <span className="lesson-index">{idx + 1}</span>
+                        )}
+                      </span>
+                      <span className="lesson-item-title">{lesson.title}</span>
+                    </button>
+                  ))
+                )}
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </section>
+  )
+
   return (
-    <div className="aulas-page page-content">
+    <div className="aulas-page aulas-page--studio page-content">
       <header className="aulas-top">
         <div className="aulas-top-intro">
-          <h1 className="aulas-title">{t('lessons.title')}</h1>
-          <p className="aulas-subtitle">{t('lessons.subtitle')}</p>
-        </div>
-        <div className="aulas-progress-card" aria-label={t('lessons.progressAria', { watched: watchedCount, total: totalLessons })}>
-          <div className="aulas-progress-head">
-            <span className="aulas-progress-label">{t('lessons.progress')}</span>
-            <span className="aulas-progress-value">
-              {watchedCount}/{totalLessons} · {progress}%
-            </span>
-          </div>
-          <div className="aulas-progress-track">
-            <div className="aulas-progress-fill" style={{ width: `${progress}%` }} />
-          </div>
+          <span className="ops-kicker">{t('lessons.title')}</span>
+          <h1 className="aulas-title">{t('lessons.subtitle')}</h1>
         </div>
       </header>
 
-      <img
-        src={bannerImg}
-        alt="Banner Membros Alpha Code"
-        className="aulas-banner"
-      />
-
-      {selectedLesson ? (
-        <>
-          <section className="aulas-player-section" aria-label={t('lessons.videoAria')}>
-            <div className="video-player-toolbar">
-              {selectedVideoId && (
-                <button
-                  type="button"
-                  className="video-reload-btn"
-                  onClick={reloadPlayer}
-                >
-                  {t('lessons.reload')}
-                </button>
-              )}
-            </div>
-            <div className="video-player-shell">
-              <div className="video-player">
-                {selectedEmbedSrc ? (
-                  <iframe
-                    key={`${selectedLesson.id}-${selectedVideoId}-${playerEpoch}`}
-                    src={selectedEmbedSrc}
-                    title={selectedLesson.title}
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
-                    allowFullScreen
-                    referrerPolicy="strict-origin-when-cross-origin"
-                  />
-                ) : (
-                  <div className="video-player-placeholder">
-                    <p>{t('lessons.videoUnavailable')}</p>
-                    {selectedLesson.youtube_url && (
-                      <button
-                        type="button"
-                        className="video-open-youtube-btn"
-                        onClick={() => void openMaterialUrl(selectedLesson.youtube_url)}
-                      >
-                        {t('lessons.openConfigured')}
-                      </button>
-                    )}
-                  </div>
-                )}
-              </div>
-            </div>
-          </section>
-
-          <section className="aulas-lesson-panel">
-            <div className="aulas-lesson-panel-head">
-              <div>
-                <h2 className="aula-detail-title">{selectedLesson.title}</h2>
-                {selectedLesson.description && (
-                  <p className="aula-detail-desc">{selectedLesson.description}</p>
-                )}
-              </div>
-              <button
-                type="button"
-                className={[
-                  'btn-mark-watched',
-                  watchedIds.has(selectedLesson.id) ? 'watched' : '',
-                ].join(' ')}
-                onClick={() => void markAsWatched(selectedLesson.id)}
-                disabled={!userId}
-                title={!userId ? t('lessons.needEmailTitle') : undefined}
-              >
-                {watchedIds.has(selectedLesson.id)
-                  ? t('lessons.watched')
-                  : t('lessons.markWatched')}
-              </button>
-            </div>
-
-            {!userId && (
-              <p className="aula-progress-hint">
-                {t('lessons.needEmailHint')}
-              </p>
-            )}
-
-            {(selectedLesson.materials?.length ?? 0) > 0 && (
-              <div className="aula-materiais-block">
-                <h3 className="aula-materiais-heading">{t('lessons.materials')}</h3>
-                <ul className="aula-materiais-list">
-                  {selectedLesson.materials!.map((m: LessonMaterial) => (
-                    <li key={m.id} className="material-item">
-                      <MaterialTypeBadge type={m.type} />
-                      <span className="material-title">{m.title}</span>
-                      <button
-                        type="button"
-                        className="material-open-btn"
-                        onClick={() => void openMaterialUrl(m.url)}
-                      >
-                        {t('lessons.open')}
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </section>
-
-          {nextLesson && (
-            <div className="aulas-next-nav">
-              <button
-                type="button"
-                className="btn-next-lesson"
-                onClick={() => selectLesson(nextLesson)}
-              >
-                <span className="btn-next-lesson-label">{t('lessons.next')}</span>
-                <span className="btn-next-lesson-name">{nextLesson.title}</span>
-                <span className="btn-next-lesson-arrow" aria-hidden>→</span>
-              </button>
-            </div>
-          )}
-        </>
-      ) : (
-        <div className="aulas-content-empty">
-          <p>{t('lessons.pickHint')}</p>
-        </div>
-      )}
-
-      <section className="aulas-trilha" aria-label={t('lessons.trackAria')}>
-        <h2 className="aulas-trilha-title">{t('lessons.trackTitle')}</h2>
-        <p className="aulas-trilha-hint">{t('lessons.trackHint')}</p>
-        <div className="aulas-trilha-list">
-          {modules.map((module) => (
-            <div key={module.id} className="module-section">
-              <button
-                type="button"
-                onClick={() => toggleModule(module.id)}
-                className="module-header"
-              >
-                <span className="module-chevron" aria-hidden>
-                  {expandedModules.has(module.id) ? '▼' : '▶'}
-                </span>
-                <span className="module-title">{module.title}</span>
-                <span className="module-counter">
-                  {module.lessons.filter((l) => watchedIds.has(l.id)).length}/{module.lessons.length}
-                </span>
-              </button>
-
-              {expandedModules.has(module.id) && (
-                <div className="module-lessons">
-                  {module.lessons.length === 0 ? (
-                    <p className="module-lessons-empty">{t('lessons.noLessonsInModule')}</p>
-                  ) : (
-                    module.lessons.map((lesson) => (
-                      <button
-                        key={lesson.id}
-                        type="button"
-                        onClick={() => selectLesson(lesson)}
-                        className={[
-                          'lesson-item',
-                          selectedLesson?.id === lesson.id ? 'active' : '',
-                        ].join(' ')}
-                      >
-                        <span
-                          className={[
-                            'lesson-status',
-                            watchedIds.has(lesson.id) ? 'is-watched' : '',
-                          ].join(' ')}
-                          aria-hidden
-                        >
-                          {watchedIds.has(lesson.id) ? '✓' : ''}
-                        </span>
-                        <span className="lesson-item-title">{lesson.title}</span>
-                      </button>
-                    ))
+      <div className="aulas-studio">
+        <div className="aulas-stage">
+          {selectedLesson ? (
+            <>
+              <section className="aulas-player-section" aria-label={t('lessons.videoAria')}>
+                <div className="video-player-toolbar">
+                  <span className="video-now-playing">{t('lessons.nowPlaying')}</span>
+                  {selectedVideoId && (
+                    <button
+                      type="button"
+                      className="video-reload-btn"
+                      onClick={reloadPlayer}
+                    >
+                      {t('lessons.reload')}
+                    </button>
                   )}
                 </div>
+                <div className="video-player-shell">
+                  <div className="video-player">
+                    {selectedEmbedSrc ? (
+                      <iframe
+                        key={`${selectedLesson.id}-${selectedVideoId}-${playerEpoch}`}
+                        src={selectedEmbedSrc}
+                        title={selectedLesson.title}
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
+                        allowFullScreen
+                        referrerPolicy="strict-origin-when-cross-origin"
+                      />
+                    ) : (
+                      <div className="video-player-placeholder">
+                        <p>{t('lessons.videoUnavailable')}</p>
+                        {selectedLesson.youtube_url && (
+                          <button
+                            type="button"
+                            className="video-open-youtube-btn"
+                            onClick={() => void openMaterialUrl(selectedLesson.youtube_url)}
+                          >
+                            {t('lessons.openConfigured')}
+                          </button>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </section>
+
+              <section className="aulas-lesson-panel">
+                <div className="aulas-lesson-panel-head">
+                  <div>
+                    <h2 className="aula-detail-title">{selectedLesson.title}</h2>
+                    {selectedLesson.description && (
+                      <p className="aula-detail-desc">{selectedLesson.description}</p>
+                    )}
+                  </div>
+                  <button
+                    type="button"
+                    className={[
+                      'btn-mark-watched',
+                      watchedIds.has(selectedLesson.id) ? 'watched' : '',
+                    ].join(' ')}
+                    onClick={() => void markAsWatched(selectedLesson.id)}
+                    disabled={!userId}
+                    title={!userId ? t('lessons.needEmailTitle') : undefined}
+                  >
+                    {watchedIds.has(selectedLesson.id)
+                      ? t('lessons.watched')
+                      : t('lessons.markWatched')}
+                  </button>
+                </div>
+
+                {!userId && (
+                  <p className="aula-progress-hint">
+                    {t('lessons.needEmailHint')}
+                  </p>
+                )}
+
+                {(selectedLesson.materials?.length ?? 0) > 0 && (
+                  <div className="aula-materiais-block">
+                    <h3 className="aula-materiais-heading">{t('lessons.materials')}</h3>
+                    <ul className="aula-materiais-list">
+                      {selectedLesson.materials!.map((m: LessonMaterial) => (
+                        <li key={m.id} className="material-item">
+                          <MaterialTypeBadge type={m.type} />
+                          <span className="material-title">{m.title}</span>
+                          <button
+                            type="button"
+                            className="material-open-btn"
+                            onClick={() => void openMaterialUrl(m.url)}
+                          >
+                            {t('lessons.open')}
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </section>
+
+              {nextLesson && (
+                <div className="aulas-next-nav">
+                  <button
+                    type="button"
+                    className="btn-next-lesson"
+                    onClick={() => selectLesson(nextLesson)}
+                  >
+                    <span className="btn-next-lesson-label">{t('lessons.next')}</span>
+                    <span className="btn-next-lesson-name">{nextLesson.title}</span>
+                    <span className="btn-next-lesson-arrow" aria-hidden>
+                      <svg viewBox="0 0 16 16"><path d="M3 8h10M9 4l4 4-4 4" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                    </span>
+                  </button>
+                </div>
               )}
+            </>
+          ) : (
+            <div className="aulas-content-empty">
+              <p>{t('lessons.pickHint')}</p>
             </div>
-          ))}
+          )}
         </div>
-      </section>
+
+        <aside className="aulas-rail">
+          <div className="aulas-progress-card" aria-label={t('lessons.progressAria', { watched: watchedCount, total: totalLessons })}>
+            <div className="aulas-progress-head">
+              <span className="aulas-progress-label">{t('lessons.progress')}</span>
+              <span className="aulas-progress-value">
+                {watchedCount}/{totalLessons} · {progress}%
+              </span>
+            </div>
+            <div className="aulas-progress-track">
+              <div className="aulas-progress-fill" style={{ width: `${progress}%` }} />
+            </div>
+          </div>
+          {curriculum}
+        </aside>
+      </div>
     </div>
   )
 }

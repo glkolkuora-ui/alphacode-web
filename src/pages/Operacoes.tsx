@@ -17,7 +17,7 @@ export default function Operacoes() {
   const [logs,     setLogs]     = useState<string[]>([])
   const [loading,  setLoading]  = useState(true)
   const [configOpen, setConfigOpen] = useState(false)
-  const [opsPane, setOpsPane] = useState<'chart' | 'panel'>('chart')
+  const [opsPane, setOpsPane] = useState<'placar' | 'historico' | 'log'>('placar')
   const [activeBalance, setActiveBalance] = useState(0)
   const [displayBalanceId, setDisplayBalanceId] = useState<number | null>(null)
 
@@ -109,63 +109,68 @@ export default function Operacoes() {
   const isRunning = status?.running ?? false
 
   return (
-    <div className="operacoes">
-      {/* Barra de controle */}
-      <div className="operacoes-bar">
-        <div className="operacoes-bar-left">
-          {isRunning && (
-            <>
-              <span className="pair-badge">{status?.activeTicker}</span>
-              <span className="instrument-badge">{status?.instrument?.toUpperCase()}</span>
-              <span className="running-dot active" />
-              <span className="live-badge">{t('ops.live')}</span>
-            </>
-          )}
-          {!isRunning && <span className="bar-idle">{t('ops.idle')}</span>}
-        </div>
-        <div className="operacoes-bar-right">
-          {!isRunning
-            ? <button className="btn-start" onClick={() => void openConfig()} disabled={loading}>{t('ops.start')}</button>
-            : <button className="btn-stop"  onClick={handleStop}>{t('ops.stop')}</button>
-          }
-        </div>
-      </div>
-
-      <div className="operacoes-mobile-tabs" role="tablist" aria-label={t('ops.panes')} data-pane={opsPane}>
-        <button
-          type="button"
-          role="tab"
-          aria-selected={opsPane === 'chart'}
-          className={opsPane === 'chart' ? 'active' : ''}
-          onClick={() => setOpsPane('chart')}
-        >
-          <svg viewBox="0 0 16 16" aria-hidden>
-            <path d="M2 12V8h2v4H2zm5 0V4h2v8H7zm5 0V6h2v6h-2z" fill="currentColor" />
-          </svg>
-          {t('ops.paneChart')}
-        </button>
-        <button
-          type="button"
-          role="tab"
-          aria-selected={opsPane === 'panel'}
-          className={opsPane === 'panel' ? 'active' : ''}
-          onClick={() => setOpsPane('panel')}
-        >
-          <svg viewBox="0 0 16 16" aria-hidden>
-            <path d="M2 2h5v5H2V2zm7 0h5v5H9V2zM2 9h5v5H2V9zm7 0h5v5H9V9z" fill="currentColor" />
-          </svg>
-          {t('ops.panePanel')}
-        </button>
-      </div>
-
-      {/* Layout principal */}
-      <div className={`operacoes-body operacoes-body--${opsPane}`}>
-        <div className="operacoes-left">
+    <div className={`operacoes${isRunning ? ' operacoes--live' : ''}`}>
+      <div className={`operacoes-body operacoes-body--${opsPane}`} data-dock={opsPane}>
+        <div className="operacoes-chart">
           <LiveChart activeId={status?.activeId} activeTicker={status?.activeTicker} />
-          <LogConsole logs={logs} />
         </div>
-        <div className="operacoes-right">
-          <ScoreBoard status={status} activeBalance={activeBalance} currency={currency} />
+        <div className="operacoes-mobile-tabs" role="tablist" aria-label={t('ops.panes')} data-dock={opsPane}>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={opsPane === 'log'}
+            className={opsPane === 'log' ? 'active' : ''}
+            onClick={() => setOpsPane('log')}
+          >
+            {t('log.title')}
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={opsPane === 'placar'}
+            className={opsPane === 'placar' ? 'active' : ''}
+            onClick={() => setOpsPane('placar')}
+          >
+            {t('score.title')}
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={opsPane === 'historico'}
+            className={opsPane === 'historico' ? 'active' : ''}
+            onClick={() => setOpsPane('historico')}
+          >
+            {t('trades.title')}
+          </button>
+        </div>
+        <div className="operacoes-dock">
+          <LogConsole logs={logs} />
+          <ScoreBoard
+            status={status}
+            activeBalance={activeBalance}
+            currency={currency}
+            action={
+              !isRunning ? (
+                <button className="btn-start" onClick={() => void openConfig()} disabled={loading}>
+                  {t('ops.start')}
+                  <span className="btn-start-pulse" aria-hidden>
+                    <svg viewBox="0 0 24 24">
+                      <path d="M8 5v14l11-7z" fill="currentColor" />
+                    </svg>
+                  </span>
+                </button>
+              ) : (
+                <button className="btn-stop" onClick={handleStop}>
+                  {t('ops.stop')}
+                  <span className="btn-stop-mark" aria-hidden>
+                    <svg viewBox="0 0 24 24">
+                      <rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor" />
+                    </svg>
+                  </span>
+                </button>
+              )
+            }
+          />
           <TradeLog trades={status?.trades ?? []} currency={currency} />
         </div>
       </div>

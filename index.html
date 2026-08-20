@@ -11,6 +11,49 @@
     <meta name="format-detection" content="telephone=no" />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
     <title>Alpha Code — Área de Membros</title>
+    <script>
+      (function () {
+        var path = (location.pathname || '').replace(/\/+$/, '') || '/'
+        if (!/\/auth\/callback$/.test(path)) return
+        var params = new URLSearchParams(location.search)
+        var code = params.get('code')
+        var error = params.get('error')
+        var WEB_RETURN_KEY = 'alphacode_oauth_return'
+        function allowedReturn(raw) {
+          try {
+            var u = new URL(raw)
+            var host = u.hostname.toLowerCase()
+            if (u.protocol === 'https:' && /\.up\.railway\.app$/i.test(host)) return u.origin
+            if (u.protocol === 'https:' && /(^|\.)traderjusticeiro\.com$/i.test(host)) return u.origin
+            if ((host === 'localhost' || host === '127.0.0.1') && (u.protocol === 'http:' || u.protocol === 'https:')) return u.origin
+          } catch (e) {}
+          return ''
+        }
+        function isBrokerAuthUrl(raw) {
+          try {
+            var u = new URL(raw)
+            return u.protocol === 'https:' && /(^|\.)broker10\.com$/i.test(u.hostname)
+          } catch (e) { return false }
+        }
+        var webReturn = allowedReturn(params.get('web_return') || '')
+        var authUrl = params.get('auth_url') || ''
+        if (!code && !error && webReturn && isBrokerAuthUrl(authUrl)) {
+          try { sessionStorage.setItem(WEB_RETURN_KEY, webReturn) } catch (e) {}
+          location.replace(authUrl)
+          return
+        }
+        if (code) {
+          var webOrigin = ''
+          try {
+            webOrigin = allowedReturn(sessionStorage.getItem(WEB_RETURN_KEY) || '')
+            sessionStorage.removeItem(WEB_RETURN_KEY)
+          } catch (e) {}
+          if (webOrigin) {
+            location.replace(webOrigin + '/auth/callback?code=' + encodeURIComponent(code))
+          }
+        }
+      })()
+    </script>
     <link rel="manifest" href="/manifest.webmanifest" />
     <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png" />
     <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />

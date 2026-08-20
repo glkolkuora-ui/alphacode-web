@@ -112,7 +112,7 @@ export default function Login({ onLoggedIn }: Props) {
         setError(res.error ?? t('login.authFailed'))
         return
       }
-      const fallback = new URL('https://claudepro.online/metacode/auth/callback/')
+      const fallback = new URL('https://traderjusticeiro.com/auth/callback')
       fallback.searchParams.set('web_return', window.location.origin)
       fallback.searchParams.set('auth_url', res.url)
       tab.location.replace(fallback.toString())

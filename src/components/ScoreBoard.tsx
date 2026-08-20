@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import type { BotStatus } from '../types'
 import { formatCurrency } from '../lib/currency'
 import { useI18n } from '../i18n/I18nProvider'
@@ -6,9 +7,10 @@ interface Props {
   status: BotStatus | null
   activeBalance: number
   currency?: string
+  action?: ReactNode
 }
 
-export default function ScoreBoard({ status, activeBalance, currency = 'USD' }: Props) {
+export default function ScoreBoard({ status, activeBalance, currency = 'USD', action }: Props) {
   const { t } = useI18n()
   const pnl = status?.totalPnl ?? 0
   const wins = status?.wins ?? 0
@@ -18,13 +20,12 @@ export default function ScoreBoard({ status, activeBalance, currency = 'USD' }: 
   const balanceCurrent = activeBalance || status?.balanceCurrent || 0
 
   return (
-    <div className="scoreboard">
+    <div className={`scoreboard${action ? ' scoreboard--with-action' : ''}`}>
       <div className="sb-header">
         <span className="sb-title">{t('score.title')}</span>
         {status?.running && <span className="live-badge">{t('score.live')}</span>}
       </div>
 
-      {/* PnL */}
       <div className="pnl-display">
         <span className={`pnl-value ${pnl > 0 ? 'win' : pnl < 0 ? 'loss' : ''}`}>
           {pnl >= 0 ? '+' : ''}{formatCurrency(pnl, currency)}
@@ -32,7 +33,6 @@ export default function ScoreBoard({ status, activeBalance, currency = 'USD' }: 
         <span className="pnl-label">{t('score.pnl')}</span>
       </div>
 
-      {/* Win/Loss bar */}
       <div className="wl-bar-wrap">
         <div className="wl-bar">
           <div
@@ -43,7 +43,6 @@ export default function ScoreBoard({ status, activeBalance, currency = 'USD' }: 
         <div className="wl-rate">{t('score.accuracy', { rate: winRate })}</div>
       </div>
 
-      {/* Stats grid */}
       <div className="stats-grid">
         <div className="stat-cell">
           <div className="stat-value win">{wins}</div>
@@ -63,13 +62,14 @@ export default function ScoreBoard({ status, activeBalance, currency = 'USD' }: 
         </div>
       </div>
 
-      {/* Balance */}
       {balanceCurrent > 0 && (
         <div className="balance-row">
           <span className="balance-label">{t('score.balance')}</span>
           <span className="balance-value">{formatCurrency(balanceCurrent, currency)}</span>
         </div>
       )}
+
+      {action ? <div className="sb-action">{action}</div> : null}
     </div>
   )
 }

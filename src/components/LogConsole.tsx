@@ -15,13 +15,18 @@ export default function LogConsole({ logs }: Props) {
 
   return (
     <div className="log-console">
-      <div className="log-header">{t('log.title')}</div>
+      <div className="log-header">
+        <span className="log-header-dots" aria-hidden>
+          <i /><i /><i />
+        </span>
+        {t('log.title')}
+      </div>
       <div className="log-body">
         {[...logs].reverse().map((line, i) => {
-          const isWin = line.includes('WIN') || line.includes('✅')
-          const isLoss = line.includes('LOSS') || line.includes('❌')
-          const isStop = line.includes('Stop') || line.includes('🛑') || line.includes('🏆')
-          const isEntry = line.includes('ENTRADA') || line.includes('📍')
+          const isWin = line.includes('WIN') || line.includes('[WIN]')
+          const isLoss = line.includes('LOSS') || line.includes('[LOSS]')
+          const isStop = line.includes('[STOP]') || line.includes('Stop')
+          const isEntry = line.includes('[ENTRADA]') || line.includes('[ENTRY]')
           return (
             <div key={i} className={`log-line ${isWin ? 'win' : isLoss ? 'loss' : isStop ? 'warning' : isEntry ? 'entry' : ''}`}>
               {line}

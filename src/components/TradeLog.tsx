@@ -11,36 +11,61 @@ function timeStr(ms: number, locale: string): string {
   return new Date(ms).toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit', second: '2-digit' })
 }
 
+function ResultMark({ result }: { result: string }) {
+  if (result === 'PENDING') {
+    return (
+      <span className="result-mark result-mark--pending" aria-hidden>
+        <span />
+      </span>
+    )
+  }
+  if (result === 'WIN') {
+    return (
+      <svg className="result-mark" viewBox="0 0 16 16" aria-hidden>
+        <path d="M3.5 8.5 6.5 11.5 12.5 4.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    )
+  }
+  return (
+    <svg className="result-mark" viewBox="0 0 16 16" aria-hidden>
+      <path d="M4 4l8 8M12 4l-8 8" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+    </svg>
+  )
+}
+
 export default function TradeLog({ trades, currency = 'USD' }: Props) {
   const { t, bcp47 } = useI18n()
   return (
     <div className="tradelog">
-      <div className="tradelog-header">{t('trades.title')}</div>
+      <div className="tradelog-header">
+        <span>{t('trades.title')}</span>
+        {trades.length > 0 && <span className="tradelog-count">{trades.length}</span>}
+      </div>
       <div className="tradelog-body">
         {trades.length === 0 ? (
           <div className="tradelog-empty">{t('trades.empty')}</div>
         ) : (
-          trades.map((t) => (
-            <div key={t.id} className={`trade-row ${t.result.toLowerCase()}`}>
+          trades.map((trade) => (
+            <div key={trade.id} className={`trade-row ${trade.result.toLowerCase()}`}>
               <div className="trade-left">
-                <span className={`direction-badge ${t.direction.toLowerCase()}`}>
-                  {t.direction}
+                <span className={`direction-badge ${trade.direction.toLowerCase()}`}>
+                  {trade.direction}
                 </span>
-                <span className="strategy-tag">{t.strategy}</span>
+                <span className="strategy-tag">{trade.strategy}</span>
               </div>
               <div className="trade-center">
-                <span className={`result-tag ${t.result.toLowerCase()}`}>
-                  {t.result === 'PENDING' ? '⏳' : t.result === 'WIN' ? '✓' : '✗'}
-                  {' '}{t.result}
+                <span className={`result-tag ${trade.result.toLowerCase()}`}>
+                  <ResultMark result={trade.result} />
+                  {trade.result}
                 </span>
               </div>
               <div className="trade-right">
-                {t.result !== 'PENDING' && (
-                  <span className={`profit-val ${t.profit >= 0 ? 'win' : 'loss'}`}>
-                    {t.profit >= 0 ? '+' : ''}{formatCurrency(t.profit, currency)}
+                {trade.result !== 'PENDING' && (
+                  <span className={`profit-val ${trade.profit >= 0 ? 'win' : 'loss'}`}>
+                    {trade.profit >= 0 ? '+' : ''}{formatCurrency(trade.profit, currency)}
                   </span>
                 )}
-                <span className="trade-time">{timeStr(t.enteredAt, bcp47)}</span>
+                <span className="trade-time">{timeStr(trade.enteredAt, bcp47)}</span>
               </div>
             </div>
           ))

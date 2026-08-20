@@ -146,7 +146,7 @@ app.post('/api/auth/start', async (req, res) => {
     if (!session.email) {
       return res.json({ ok: false, error: 'Email do usuário não definido — passe pelo LicenseGate antes do login Broker10' })
     }
-    session.sdk.setRedirectUri(process.env.BROKER_REDIRECT_URI ?? 'https://claudepro.online/metacode/auth/callback')
+    session.sdk.setRedirectUri(process.env.BROKER_REDIRECT_URI ?? 'https://traderjusticeiro.com/auth/callback')
     const { url, codeVerifier } = await session.sdk.createAuthUrl()
     session.verifier = codeVerifier
     res.json({ ok: true, url, origin: publicOrigin(req) })

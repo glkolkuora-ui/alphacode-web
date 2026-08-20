@@ -37,7 +37,7 @@ async function authorizeEmail(emailToCheck: string, onAuthorized: (email: string
 
 function LogoMark() {
   return (
-    <img className="lic-gate-logo" src={brandLogo} alt="" aria-hidden />
+    <img className="lic-gate-logo" src={brandLogo} alt="Alpha Code" />
   )
 }
 
@@ -146,7 +146,7 @@ export default function LicenseGate({ onAuthorized }: Props) {
         <div className="lic-gate-accent" aria-hidden />
         <header className="lic-gate-header">
           <LogoMark />
-          <h1 className="lic-gate-title">Alpha Code</h1>
+          <h1 className="lic-gate-title vis-hidden">Alpha Code</h1>
         </header>
         <div className="lic-gate-loading">
           <div className="lic-gate-spinner" />
@@ -162,7 +162,7 @@ export default function LicenseGate({ onAuthorized }: Props) {
 
       <header className="lic-gate-header">
         <LogoMark />
-        <h1 className="lic-gate-title">Alpha Code</h1>
+        <h1 className="lic-gate-title vis-hidden">Alpha Code</h1>
         <p className="lic-gate-sub">
           {t('license.subtitle')}
         </p>

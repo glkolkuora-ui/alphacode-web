@@ -30,7 +30,7 @@ interface Props {
 
 function LogoMark() {
   return (
-    <img className="login-supa-logo" src={brandLogo} alt="" aria-hidden />
+    <img className="login-supa-logo" src={brandLogo} alt="Alpha Code" />
   )
 }
 
