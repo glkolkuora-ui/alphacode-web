@@ -137,29 +137,27 @@ export default function MainApp({ onLogout }: Props) {
           </div>
 
           <nav className="sidebar-zone sidebar-zone--nav" aria-label={t('nav.sections')}>
-            {NAV.map(({ id, labelKey, icon: Icon }) => {
-              const active = tab === id
-              const isCta = id === 'operacoes'
-              const label = t(labelKey)
-              return (
-                <button
-                  key={id}
-                  type="button"
-                  title={label}
-                  className={[
-                    'sidebar-nav-btn',
-                    isCta ? 'sidebar-nav-btn--operacoes' : '',
-                    active ? 'active' : '',
-                  ].filter(Boolean).join(' ')}
-                  onClick={() => setTab(id)}
-                >
-                  <span className="sidebar-nav-iconWrap">
-                    <Icon className="sidebar-nav-icon" />
-                  </span>
-                  <span className="sidebar-nav-label">{label}</span>
-                </button>
-              )
-            })}
+            <div className="sidebar-nav-track">
+              {NAV.map(({ id, labelKey, icon: Icon }) => {
+                const active = tab === id
+                const label = t(labelKey)
+                return (
+                  <button
+                    key={id}
+                    type="button"
+                    title={label}
+                    aria-current={active ? 'page' : undefined}
+                    className={['sidebar-nav-btn', active ? 'active' : ''].filter(Boolean).join(' ')}
+                    onClick={() => setTab(id)}
+                  >
+                    <span className="sidebar-nav-iconWrap">
+                      <Icon className="sidebar-nav-icon" />
+                    </span>
+                    <span className="sidebar-nav-label">{label}</span>
+                  </button>
+                )
+              })}
+            </div>
           </nav>
 
           <div className="sidebar-zone sidebar-zone--footer">
