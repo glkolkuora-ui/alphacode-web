@@ -108,6 +108,26 @@ export default function Operacoes() {
 
   const isRunning = status?.running ?? false
 
+  const sessionAction = !isRunning ? (
+    <button className="btn-start" onClick={() => void openConfig()} disabled={loading}>
+      {t('ops.start')}
+      <span className="btn-start-pulse" aria-hidden>
+        <svg viewBox="0 0 24 24">
+          <path d="M8 5v14l11-7z" fill="currentColor" />
+        </svg>
+      </span>
+    </button>
+  ) : (
+    <button className="btn-stop" onClick={handleStop}>
+      {t('ops.stop')}
+      <span className="btn-stop-mark" aria-hidden>
+        <svg viewBox="0 0 24 24">
+          <rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor" />
+        </svg>
+      </span>
+    </button>
+  )
+
   return (
     <div className={`operacoes${isRunning ? ' operacoes--live' : ''}`}>
       <div className={`operacoes-body operacoes-body--${opsPane}`} data-dock={opsPane}>
@@ -149,29 +169,12 @@ export default function Operacoes() {
             status={status}
             activeBalance={activeBalance}
             currency={currency}
-            action={
-              !isRunning ? (
-                <button className="btn-start" onClick={() => void openConfig()} disabled={loading}>
-                  {t('ops.start')}
-                  <span className="btn-start-pulse" aria-hidden>
-                    <svg viewBox="0 0 24 24">
-                      <path d="M8 5v14l11-7z" fill="currentColor" />
-                    </svg>
-                  </span>
-                </button>
-              ) : (
-                <button className="btn-stop" onClick={handleStop}>
-                  {t('ops.stop')}
-                  <span className="btn-stop-mark" aria-hidden>
-                    <svg viewBox="0 0 24 24">
-                      <rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor" />
-                    </svg>
-                  </span>
-                </button>
-              )
-            }
+            action={sessionAction}
           />
           <TradeLog trades={status?.trades ?? []} currency={currency} />
+        </div>
+        <div className="operacoes-mobile-cta">
+          {sessionAction}
         </div>
       </div>
 
