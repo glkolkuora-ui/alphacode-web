@@ -1,6 +1,7 @@
 import type { TradeRecord } from '../types'
 import { formatCurrency } from '../lib/currency'
 import { useI18n } from '../i18n/I18nProvider'
+import { strategyLabel } from '../lib/strategies'
 
 interface Props {
   trades: TradeRecord[]
@@ -51,7 +52,7 @@ export default function TradeLog({ trades, currency = 'USD' }: Props) {
                 <span className={`direction-badge ${trade.direction.toLowerCase()}`}>
                   {trade.direction}
                 </span>
-                <span className="strategy-tag">{trade.strategy}</span>
+                <span className="strategy-tag">{strategyLabel(trade.strategy)}</span>
               </div>
               <div className="trade-center">
                 <span className={`result-tag ${trade.result.toLowerCase()}`}>

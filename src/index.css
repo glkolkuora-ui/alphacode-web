@@ -2146,10 +2146,11 @@ select option { background: var(--bg-card); }
   background: var(--bg3);
   color: var(--text);
   font-family: var(--font-mono);
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.04em;
   cursor: pointer;
+  white-space: nowrap;
   transition: border-color .15s, background .15s, color .15s;
 }
 .strategy-chip:hover:not(:disabled) { border-color: var(--border2); }

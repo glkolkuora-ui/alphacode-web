@@ -7,6 +7,7 @@ import LiveChart from '../components/LiveChart'
 import LogConsole from '../components/LogConsole'
 import { formatCurrency } from '../lib/currency'
 import { useI18n } from '../i18n/I18nProvider'
+import { relabelStrategyText, strategyLabel } from '../lib/strategies'
 
 export default function Operacoes() {
   const { t } = useI18n()
@@ -54,9 +55,9 @@ export default function Operacoes() {
       window.alphaCode.on('bot:started',        s  => { setStatus(s); addLog(tRef.current('ops.logStarted')) }),
       window.alphaCode.on('bot:stopped',        s  => { setStatus(s); setDisplayBalanceId(null); addLog(tRef.current('ops.logStopped')) }),
       window.alphaCode.on('bot:trade_entered', (t: TradeRecord) =>
-        addLog(tRef.current('ops.logEntry', { strategy: t.strategy, direction: t.direction, amount: formatCurrency(t.amount, currencyRef.current) }))),
+        addLog(tRef.current('ops.logEntry', { strategy: strategyLabel(t.strategy), direction: t.direction, amount: formatCurrency(t.amount, currencyRef.current) }))),
       window.alphaCode.on('bot:trade_result',  (tr: TradeRecord) =>
-        addLog(`[${tr.result}] ${tr.strategy} ${tr.direction} ${tr.profit >= 0 ? '+' : ''}${formatCurrency(tr.profit, currencyRef.current)}`)),
+        addLog(`[${tr.result}] ${strategyLabel(tr.strategy)} ${tr.direction} ${tr.profit >= 0 ? '+' : ''}${formatCurrency(tr.profit, currencyRef.current)}`)),
       window.alphaCode.on('bot:stop_triggered',(d: any) => {
         const map: Record<string, 'ops.stopReason.stop_loss' | 'ops.stopReason.stop_win' | 'ops.stopReason.consec_losses'> = {
           stop_loss: 'ops.stopReason.stop_loss',
@@ -66,7 +67,7 @@ export default function Operacoes() {
         const reasonKey = map[String(d.reason)]
         addLog(tRef.current('ops.logStop', { reason: reasonKey ? tRef.current(reasonKey) : String(d.reason ?? '') }))
       }),
-      window.alphaCode.on('bot:log',           (m: string) => addLog(m)),
+      window.alphaCode.on('bot:log',           (m: string) => addLog(relabelStrategyText(m))),
       window.alphaCode.on('bot:balance',       (v: number) => setActiveBalance(v)),
       window.alphaCode.on('bot:error',         (e: string) => addLog(tRef.current('ops.logError', { error: e }))),
     ]

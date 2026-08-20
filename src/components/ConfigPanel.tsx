@@ -3,6 +3,7 @@ import type { BalanceInfo, ActiveInfo, BotConfig } from '../types'
 import { currencySymbol, formatCurrency } from '../lib/currency'
 import { FEATURE_FLAGS } from '../feature-flags'
 import { useI18n } from '../i18n/I18nProvider'
+import { STRATEGY_LABELS } from '../lib/strategies'
 
 interface Props {
   balances: BalanceInfo[]
@@ -212,10 +213,10 @@ export default function ConfigPanel({ balances, onStart, onClose }: Props) {
           <section className="setup-block">
             <div className="setup-block-label">{t('config.strategies')}</div>
             <div className="strategy-chips" role="group" aria-label={t('config.strategies')}>
-              <StrategyToggle label="Q5" active={q5} onChange={v => handleToggleNormal(setQ5, v)} disabled={hard} />
-              <StrategyToggle label="ALT" active={alt} onChange={v => handleToggleNormal(setAlt, v)} disabled={hard} />
-              <StrategyToggle label="LAST2" active={last2} onChange={v => handleToggleNormal(setLast2, v)} disabled={hard} />
-              <StrategyToggle label="HARD" active={hard} onChange={handleToggleHard} />
+              <StrategyToggle label={STRATEGY_LABELS.Q5} active={q5} onChange={v => handleToggleNormal(setQ5, v)} disabled={hard} />
+              <StrategyToggle label={STRATEGY_LABELS.ALT} active={alt} onChange={v => handleToggleNormal(setAlt, v)} disabled={hard} />
+              <StrategyToggle label={STRATEGY_LABELS.LAST2} active={last2} onChange={v => handleToggleNormal(setLast2, v)} disabled={hard} />
+              <StrategyToggle label={STRATEGY_LABELS.HARD} active={hard} onChange={handleToggleHard} />
             </div>
             {!anyStrategy && <div className="config-warning">{t('config.needStrategy')}</div>}
 
