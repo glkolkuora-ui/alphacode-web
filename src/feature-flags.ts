@@ -8,6 +8,8 @@ export const FEATURE_FLAGS = {
   LOGIN_REQUIRED: false,
   /** Gate de email antes do login Broker10 (tela inicial). */
   LICENSE_REQUIRED: true,
+  /** false = pula o OAuth Broker10 e entra no painel (modo design). Religar depois. */
+  BROKER_AUTH_REQUIRED: false,
   /** true = qualquer email válido passa sem consultar Misespay (modo aberto). */
   LICENSE_OPEN_ACCESS: true,
   TELEMETRY_ENABLED: true,

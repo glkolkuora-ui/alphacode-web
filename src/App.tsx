@@ -24,7 +24,7 @@ export default function App() {
   // Gate de licença Misespay (vem ANTES de tudo)
   const [licensedEmail, setLicensedEmail] = useState<string | null>(null)
   // Login Broker10 (fluxo atual — sempre ativo)
-  const [loggedIn, setLoggedIn] = useState(false)
+  const [loggedIn, setLoggedIn] = useState(!FEATURE_FLAGS.BROKER_AUTH_REQUIRED)
   // Login Supabase (futuro — só usado se LOGIN_REQUIRED=true)
   const [supaUser, setSupaUser]   = useState<SupaUser | null>(null)
   const [supaReady, setSupaReady] = useState(!FEATURE_FLAGS.LOGIN_REQUIRED)
@@ -50,8 +50,10 @@ export default function App() {
       ? null
       : FEATURE_FLAGS.LOGIN_REQUIRED && !supaUser
         ? <LoginSupabase onLogin={setSupaUser} />
-        : loggedIn
-          ? <MainApp onLogout={() => setLoggedIn(false)} />
+        : (loggedIn || !FEATURE_FLAGS.BROKER_AUTH_REQUIRED)
+          ? <MainApp onLogout={() => {
+              if (FEATURE_FLAGS.BROKER_AUTH_REQUIRED) setLoggedIn(false)
+            }} />
           : <Login onLoggedIn={() => setLoggedIn(true)} />
 
   if (FEATURE_FLAGS.LOGIN_REQUIRED && !supaReady && licensedEmail) return null
