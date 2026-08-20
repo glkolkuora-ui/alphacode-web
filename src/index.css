@@ -2203,11 +2203,21 @@ select option { background: var(--bg-card); }
 .setup-opt-extra label { margin: 0; }
 .setup-opt-extra input { width: 72px; }
 
-.protect-grid {
+.protect-stops {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: 1fr 1fr;
   gap: 12px;
 }
+
+.protect-streak {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 40px;
+}
+.protect-streak label { margin: 0; }
+.protect-streak input { width: 80px; flex-shrink: 0; }
 
 .setup-foot { padding-top: 14px; }
 .setup-start { min-width: 148px; }
@@ -5942,8 +5952,7 @@ select.select-locked {
     width: 100%;
   }
 
-  .setup-grid,
-  .protect-grid {
+  .setup-grid {
     grid-template-columns: 1fr;
   }
 

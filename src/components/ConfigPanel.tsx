@@ -268,7 +268,7 @@ export default function ConfigPanel({ balances, onStart, onClose }: Props) {
 
           <section className="setup-block">
             <div className="setup-block-label">{t('config.risk')}</div>
-            <div className="protect-grid">
+            <div className="protect-stops">
               <div className="field-group">
                 <label>{t('config.stopLoss', { sym })}</label>
                 <input type="number" min="0" value={stopLoss} onChange={e => setStopLoss(e.target.value)} placeholder={t('config.disabledPh')} />
@@ -277,10 +277,10 @@ export default function ConfigPanel({ balances, onStart, onClose }: Props) {
                 <label>{t('config.stopWin', { sym })}</label>
                 <input type="number" min="0" value={stopWin} onChange={e => setStopWin(e.target.value)} placeholder={t('config.disabledPh')} />
               </div>
-              <div className="field-group">
-                <label>{t('config.consecLosses')}</label>
-                <input type="number" min="0" value={stopConsec} onChange={e => setStopConsec(e.target.value)} placeholder={t('config.disabledPh')} />
-              </div>
+            </div>
+            <div className="protect-streak">
+              <label>{t('config.consecLosses')}</label>
+              <input type="number" min="0" value={stopConsec} onChange={e => setStopConsec(e.target.value)} placeholder={t('config.disabledPh')} />
             </div>
           </section>
         </div>
