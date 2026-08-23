@@ -141,17 +141,36 @@
     function isBrokerAuthUrl(raw) {
       try {
         const u = new URL(raw)
-        return u.protocol === 'https:' && /(^|\.)broker10\.com$/i.test(u.hostname)
+        const host = u.hostname.toLowerCase()
+        return u.protocol === 'https:' && (/(^|\.)broker10\.com$/i.test(host) || host.includes('broker10'))
       } catch (e) {
         return false
       }
     }
 
+    function readReturnCookie() {
+      try {
+        const m = document.cookie.match(/(?:^|; )cw_oauth_return=([^;]*)/)
+        return m ? isAllowedReturn(decodeURIComponent(m[1])) : ''
+      } catch (e) {
+        return ''
+      }
+    }
+
+    function writeReturnCookie(origin) {
+      try {
+        document.cookie = 'cw_oauth_return=' + encodeURIComponent(origin)
+          + '; Max-Age=600; Path=/; Secure; SameSite=Lax'
+      } catch (e) {}
+    }
+
     const webReturn = isAllowedReturn(params.get('web_return') || '')
+      || isAllowedReturn(params.get('state') || '')
     const authUrl = params.get('auth_url') || ''
 
     if (!code && !error && webReturn && isBrokerAuthUrl(authUrl)) {
       try { sessionStorage.setItem(WEB_RETURN_KEY, webReturn) } catch (e) {}
+      writeReturnCookie(webReturn)
       document.getElementById('status-text').textContent = 'Abrindo autorização...'
       window.location.replace(authUrl)
     } else if (error) {
@@ -163,6 +182,8 @@
       let webOrigin = ''
       try {
         webOrigin = isAllowedReturn(sessionStorage.getItem(WEB_RETURN_KEY) || '')
+          || readReturnCookie()
+          || isAllowedReturn(params.get('state') || '')
         sessionStorage.removeItem(WEB_RETURN_KEY)
       } catch (e) {}
 

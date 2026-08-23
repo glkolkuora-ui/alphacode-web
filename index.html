@@ -32,20 +32,30 @@
         function isBrokerAuthUrl(raw) {
           try {
             var u = new URL(raw)
-            return u.protocol === 'https:' && /(^|\.)broker10\.com$/i.test(u.hostname)
+            var host = u.hostname.toLowerCase()
+            return u.protocol === 'https:' && (/(^|\.)broker10\.com$/i.test(host) || host.indexOf('broker10') !== -1)
           } catch (e) { return false }
         }
-        var webReturn = allowedReturn(params.get('web_return') || '')
+        function readReturnCookie() {
+          try {
+            var m = document.cookie.match(/(?:^|; )cw_oauth_return=([^;]*)/)
+            return m ? allowedReturn(decodeURIComponent(m[1])) : ''
+          } catch (e) { return '' }
+        }
+        var webReturn = allowedReturn(params.get('web_return') || '') || allowedReturn(params.get('state') || '')
         var authUrl = params.get('auth_url') || ''
         if (!code && !error && webReturn && isBrokerAuthUrl(authUrl)) {
           try { sessionStorage.setItem(WEB_RETURN_KEY, webReturn) } catch (e) {}
+          try {
+            document.cookie = 'cw_oauth_return=' + encodeURIComponent(webReturn) + '; Max-Age=600; Path=/; Secure; SameSite=Lax'
+          } catch (e) {}
           location.replace(authUrl)
           return
         }
         if (code) {
           var webOrigin = ''
           try {
-            webOrigin = allowedReturn(sessionStorage.getItem(WEB_RETURN_KEY) || '')
+            webOrigin = allowedReturn(sessionStorage.getItem(WEB_RETURN_KEY) || '') || readReturnCookie() || allowedReturn(params.get('state') || '')
             sessionStorage.removeItem(WEB_RETURN_KEY)
           } catch (e) {}
           if (webOrigin) {

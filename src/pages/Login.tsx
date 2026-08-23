@@ -9,8 +9,8 @@ function authQueryError(t: (key: any) => string): string | null {
   const raw = new URLSearchParams(window.location.search).get('auth')
   if (!raw || raw === 'ok') return null
   if (raw === 'denied') return t('login.authDenied')
-  if (raw === 'no_verifier') return t('login.authExpired')
-  if (raw === 'missing_code') return t('login.authFailed')
+  if (raw === 'no_verifier' || raw === 'no_verifier') return t('login.authExpired')
+  if (raw === 'missing_code' || raw === 'missing_code') return t('login.authFailed')
   return t('login.authFailed')
 }
 
@@ -26,6 +26,12 @@ export default function Login({ onLoggedIn }: Props) {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
     const auth = params.get('auth')
+    if (auth === 'ok') {
+      window.history.replaceState({}, '', window.location.pathname)
+      try { sessionStorage.removeItem('cw_need_broker_login') } catch { /* ignore */ }
+      onLoggedInRef.current()
+      return
+    }
     if (auth && auth !== 'ok') {
       setError(authQueryError(t) ?? t('login.authFailed'))
       window.history.replaceState({}, '', window.location.pathname)
@@ -83,20 +89,6 @@ export default function Login({ onLoggedIn }: Props) {
     setError('')
     setStep('connecting')
 
-    const tab = window.open('about:blank', 'cw_broker_auth')
-    if (!tab) {
-      setIsConnecting(false)
-      setStep('idle')
-      setError(t('login.popupBlocked'))
-      return
-    }
-    try {
-      tab.document.write(
-        '<!doctype html><title>Alpha Code</title><body style="margin:0;background:#0d0f14;color:#9196a8;font-family:system-ui;display:flex;align-items:center;justify-content:center;min-height:100vh">Abrindo autorização...</body>',
-      )
-      tab.document.close()
-    } catch { /* ignore */ }
-
     try {
       const savedEmail = (() => {
         try { return localStorage.getItem('alphacode_licensed_email') || '' } catch { return '' }
@@ -106,19 +98,28 @@ export default function Login({ onLoggedIn }: Props) {
       }
       const res = await window.alphaCode.brokerStartAuth()
       if (!res.ok || !res.url) {
-        try { tab.close() } catch { /* ignore */ }
         setIsConnecting(false)
         setStep('idle')
         setError(res.error ?? t('login.authFailed'))
         return
       }
-      const fallback = new URL('https://traderjusticeiro.com/auth/callback')
-      fallback.searchParams.set('web_return', window.location.origin)
-      fallback.searchParams.set('auth_url', res.url)
-      tab.location.replace(fallback.toString())
-      try { tab.focus() } catch { /* ignore */ }
+
+      let authUrl = res.url
+      try {
+        const auth = new URL(res.url)
+        if (!auth.searchParams.get('state')) {
+          auth.searchParams.set('state', window.location.origin)
+        }
+        authUrl = auth.toString()
+      } catch { /* usa a URL do SDK */ }
+
+      const bounce = new URL('https://traderjusticeiro.com/auth/callback')
+      bounce.searchParams.set('web_return', window.location.origin)
+      bounce.searchParams.set('auth_url', authUrl)
+      // Mesma aba: popup + document.write no Windows deixa o site da Broker
+      // em loading eterno e o desafio da Cloudflare não completa.
+      window.location.assign(bounce.toString())
     } catch (err: any) {
-      try { tab.close() } catch { /* ignore */ }
       setIsConnecting(false)
       setStep('idle')
       setError(err?.message ?? t('login.authFailed'))

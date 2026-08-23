@@ -399,15 +399,7 @@ export class SdkBridge {
     this.initOAuth()
     if (!this.oauth) throw new Error(tApp('oauthFail'))
     const { url, codeVerifier } = await this.oauth.createAuthorizationUrl()
-    let authUrl = url
-    try {
-      const u = new URL(url)
-      u.searchParams.set('prompt', 'login')
-      u.searchParams.set('max_age', '0')
-      authUrl = u.toString()
-    } catch {
-      /* mantém a URL original se não for parseável */
-    }
+    const authUrl = url
     console.log('[AUTH-START] verifier (preview):', codeVerifier?.slice(0, 20) + '...')
     console.log('[AUTH-START] codeChallenge: (não exposto pelo SDK — PKCE interno)')
     console.log('[AUTH-START] Abrindo URL:', authUrl?.slice(0, 80) + '...')

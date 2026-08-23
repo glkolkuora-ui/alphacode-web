@@ -149,6 +149,10 @@ app.post('/api/auth/start', async (req, res) => {
     session.sdk.setRedirectUri(process.env.BROKER_REDIRECT_URI ?? 'https://traderjusticeiro.com/auth/callback')
     const { url, codeVerifier } = await session.sdk.createAuthUrl()
     session.verifier = codeVerifier
+    res.cookie('cw_pkce', codeVerifier, {
+      ...sessionCookie(),
+      maxAge: 15 * 60 * 1000,
+    })
     res.json({ ok: true, url, origin: publicOrigin(req) })
   } catch (e: any) {
     res.json({ ok: false, error: e?.message ?? 'auth_start_failed' })
@@ -176,18 +180,53 @@ app.post('/api/auth/exchange', async (req, res) => {
   }
 })
 
+function isSafeHttpsUrl(raw: string, hostTest: (host: string) => boolean): string {
+  try {
+    const u = new URL(raw)
+    if (u.protocol !== 'https:') return ''
+    return hostTest(u.hostname.toLowerCase()) ? u.toString() : ''
+  } catch {
+    return ''
+  }
+}
+
+app.get('/auth/broker-launch', (_req, res) => {
+  res.type('html').send(`<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><title>Alpha Code</title>
+<meta name="referrer" content="no-referrer">
+</head>
+<body style="margin:0;background:#0d0f14;color:#9196a8;font-family:system-ui;display:flex;align-items:center;justify-content:center;min-height:100vh">
+Abrindo autorização...
+</body></html>`)
+})
+
 app.get('/auth/callback', async (req, res) => {
   const session = requireSession(req, res)!
   try {
+    const authUrl = isSafeHttpsUrl(String(req.query.auth_url ?? ''), (host) =>
+      /(^|\.)broker10\.com$/i.test(host),
+    )
+    const webReturn = isSafeHttpsUrl(String(req.query.web_return ?? ''), (host) =>
+      /(^|\.)up\.railway\.app$/i.test(host)
+      || /(^|\.)traderjusticeiro\.com$/i.test(host)
+      || host === 'localhost'
+      || host === '127.0.0.1',
+    )
+    if (!req.query.code && !req.query.error && authUrl && webReturn) {
+      return res.redirect(302, authUrl)
+    }
+
     if (req.query.error) {
       return res.redirect(`/?auth=denied`)
     }
     const code = extractOAuthCode(String(req.query.code ?? req.query.raw ?? ''))
     if (!code) return res.redirect('/?auth=missing_code')
-    if (!session.verifier) return res.redirect('/?auth=no_verifier')
-    await session.sdk.exchangeCode(code, session.verifier)
+    const verifier = session.verifier || String(req.cookies?.cw_pkce ?? '')
+    if (!verifier) return res.redirect('/?auth=no_verifier')
+    await session.sdk.exchangeCode(code, verifier)
     await session.sdk.connect()
     session.verifier = null
+    res.clearCookie('cw_pkce', { path: '/' })
     session.reauthRequired = false
     session.brokerLinked = true
     if (session.email && !session.userId) await setSessionEmail(session, session.email)
@@ -197,19 +236,17 @@ app.get('/auth/callback', async (req, res) => {
     res.type('html').send(`<!doctype html>
 <html lang="pt-BR"><head><meta charset="utf-8"><title>Alpha Code</title></head>
 <body style="background:#0d0f14;color:#e2e4ea;font-family:system-ui;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0">
-<p id="msg">Conectado. Fechando esta guia...</p>
+<p>Conectado. Redirecionando...</p>
 <script>
   try { localStorage.setItem('cw_broker_auth', JSON.stringify({ ok: true, t: Date.now() })) } catch (e) {}
   try {
     if (window.opener && !window.opener.closed) {
       window.opener.postMessage({ channel: 'broker:connected' }, ${JSON.stringify(origin)})
       window.opener.focus()
+      window.close()
     }
   } catch (e) {}
-  window.close()
-  setTimeout(function () {
-    document.getElementById('msg').textContent = 'Pode fechar esta guia e voltar ao Alpha Code.'
-  }, 400)
+  setTimeout(function () { location.replace('/?auth=ok') }, 200)
 </script>
 </body></html>`)
   } catch (e: any) {

@@ -46,7 +46,7 @@ declare global {
     alphaCode: {
       /** Plataforma (`darwin`, `win32`, `web`). */
       appPlatform: string
-      brokerStartAuth: () => Promise<{ ok: boolean; error?: string }>
+      brokerStartAuth: () => Promise<{ ok: boolean; url?: string; origin?: string; error?: string }>
       brokerExchangeCode: (code: string) => Promise<{ ok: boolean; error?: string }>
       brokerDisconnect: () => Promise<{ ok: boolean; error?: string }>
       brokerLogout: () => Promise<{ ok: boolean; error?: string }>
