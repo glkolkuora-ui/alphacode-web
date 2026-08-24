@@ -21,11 +21,28 @@ interface RawCandle {
   close: number
 }
 
+/** O gráfico trata Unix como UTC. Sem este deslocamento, o Brasil (UTC−3) vê 18h às 15h. */
+function unixToChartTime(unixSeconds: number): UTCTimestamp {
+  const sec = unixSeconds > 1e12 ? Math.floor(unixSeconds / 1000) : unixSeconds
+  const d = new Date(sec * 1000)
+  return Math.floor(
+    Date.UTC(
+      d.getFullYear(),
+      d.getMonth(),
+      d.getDate(),
+      d.getHours(),
+      d.getMinutes(),
+      d.getSeconds(),
+      d.getMilliseconds(),
+    ) / 1000,
+  ) as UTCTimestamp
+}
+
 function toBars(candles: RawCandle[]) {
   return candles
     .filter((c) => c && Number.isFinite(Number(c.from)))
     .map((c) => ({
-      time: Number(c.from) as UTCTimestamp,
+      time: unixToChartTime(Number(c.from)),
       open: c.open,
       high: c.max ?? c.high ?? c.close,
       low: c.min ?? c.low ?? c.close,
@@ -34,7 +51,7 @@ function toBars(candles: RawCandle[]) {
 }
 
 export default function LiveChart({ activeId, activeTicker }: Props) {
-  const { t } = useI18n()
+  const { t, bcp47 } = useI18n()
   const containerRef = useRef<HTMLDivElement>(null)
   const seriesRef = useRef<ReturnType<ReturnType<typeof createChart>['addSeries']> | null>(null)
   const chartRef = useRef<ReturnType<typeof createChart> | null>(null)
@@ -76,8 +93,12 @@ export default function LiveChart({ activeId, activeTicker }: Props) {
       timeScale: {
         borderColor: '#1a1d26',
         timeVisible: true,
+        secondsVisible: false,
         barSpacing: 9,
         rightOffset: 4,
+      },
+      localization: {
+        locale: bcp47,
       },
       width: size.width,
       height: size.height,
@@ -191,7 +212,7 @@ export default function LiveChart({ activeId, activeTicker }: Props) {
       chartRef.current = null
       seriesRef.current = null
     }
-  }, [])
+  }, [bcp47])
 
   useEffect(() => {
     reloadRef.current()
