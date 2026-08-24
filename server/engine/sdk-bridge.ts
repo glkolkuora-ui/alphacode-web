@@ -349,7 +349,7 @@ export class SdkBridge {
 
   async restoreFromTokens(tokens: { accessToken: string; refreshToken?: string }): Promise<void> {
     await this.tokenStorage.set(tokens)
-    if (!this.userEmail) throw new Error(tApp('emailNotSet'))
+    if (FEATURE_FLAGS.USE_EDGE_AUTH && !this.userEmail) throw new Error(tApp('emailNotSet'))
     this.initOAuth()
   }
 
