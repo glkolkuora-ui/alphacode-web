@@ -8,11 +8,14 @@ import LogConsole from '../components/LogConsole'
 import { formatCurrency } from '../lib/currency'
 import { useI18n } from '../i18n/I18nProvider'
 import { relabelStrategyText, strategyLabel } from '../lib/strategies'
+import { stampLog } from '../lib/log-line'
 
 export default function Operacoes() {
-  const { t } = useI18n()
+  const { t, bcp47 } = useI18n()
   const tRef = useRef(t)
   tRef.current = t
+  const bcp47Ref = useRef(bcp47)
+  bcp47Ref.current = bcp47
   const [balances, setBalances] = useState<BalanceInfo[]>([])
   const [status,   setStatus]   = useState<BotStatus | null>(null)
   const [logs,     setLogs]     = useState<string[]>([])
@@ -22,7 +25,9 @@ export default function Operacoes() {
   const [activeBalance, setActiveBalance] = useState(0)
   const [displayBalanceId, setDisplayBalanceId] = useState<number | null>(null)
 
-  const addLog = useCallback((msg: string) => setLogs(p => [msg, ...p].slice(0, 200)), [])
+  const addLog = useCallback((msg: string) => {
+    setLogs(p => [stampLog(msg, bcp47Ref.current), ...p].slice(0, 200))
+  }, [])
 
   const currency =
     status?.currency

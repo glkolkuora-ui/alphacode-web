@@ -252,7 +252,13 @@ export function getAppLocale(): AppLocale {
 }
 
 export function logTime(): string {
-  return new Date().toLocaleTimeString(BCP47[current])
+  return new Date().toLocaleTimeString(BCP47[current], {
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false,
+    timeZone: process.env.LOG_TZ || 'America/Sao_Paulo',
+  })
 }
 
 export function tApp(key: AppMsgKey, vars?: Record<string, string | number>): string {
